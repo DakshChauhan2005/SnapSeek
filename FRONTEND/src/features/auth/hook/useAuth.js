@@ -8,10 +8,12 @@ import { setUser, setError, setLoading } from "../auth.slice";
 export function useAuth() {
 
     const dispatch = useDispatch();
+
+    
     async function handleRegister({ username, email, password }) {
         try {
             dispatch(setLoading(true));
-            const data = await register({ username, email, password });
+            await register({ username, email, password });
         } catch (err) {
             dispatch(setError(err.response?.data?.message || "Registration failed"));
         } finally {

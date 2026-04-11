@@ -1,10 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../hook/useAuth";
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router";
+
+
 const Login = () => {
+    const { user, loading } = useSelector((state) => state.auth);
     const navigate = useNavigate();
     const [form, setForm] = useState({ email: "", password: "" });
+    
     const { handleLogin } = useAuth();
+    
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
@@ -17,6 +24,10 @@ const Login = () => {
         navigate("/")
     };
 
+
+    if (!loading && user) {
+        return <Navigate to="/" />
+    } 
     return (
         <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
             <div className="w-full max-w-md space-y-8">

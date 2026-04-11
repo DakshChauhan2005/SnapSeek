@@ -1,14 +1,17 @@
 import { RouterProvider } from "react-router"
 import { router } from "./app.routes"
-
+import { useAuth } from "../features/auth/hook/useAuth"
+import { useEffect } from "react";
 
 function App() {
+  const auth = useAuth();
+  useEffect(() => {
+    auth.handleGetMe();
+  }, [])
+
   return (
     <>
       <RouterProvider router={router} />
-      <h1 className="text-3xl font-bold underline text-pink-500">
-        Hello, Vite + React!
-      </h1>
     </>
   )
 }
