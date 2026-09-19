@@ -4,6 +4,7 @@ import connectDB from '../config/db.js';
 import authRoutes from '../routes/auth.routes.js'
 import cors from 'cors';
 import morgan from 'morgan';
+import chatRouter from '../routes/chat.routes.js';
 
 
 const app = express();
@@ -17,8 +18,8 @@ connectDB();
 app.use(morgan('dev'));
 
 
-
 app.use('/api/auth', authRoutes);
+app.use('/api/chats', chatRouter);
 // Example route
 app.get('/', (req, res) => {
   res.json({ message: 'Hello, World!' });
