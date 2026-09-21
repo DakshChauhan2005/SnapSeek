@@ -9,7 +9,7 @@ export async function register(req, res) {
             $or: [{ email }, { username }]
         });
         if (isUserExist) {
-            return res.status(400).json({
+            return res.status(409).json({
                 sucess: false,
                 message: "User with this email or username already exists",
                 err: "User already exists"

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../hook/useAuth";
 import { useSelector } from "react-redux";
-import { Navigate } from "react-router";
 
 
 const Login = () => {
@@ -29,20 +28,20 @@ const Login = () => {
         return <Navigate to="/" />
     } 
     return (
-        <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
-            <div className="w-full max-w-md space-y-8">
+        <div className="flex min-h-screen items-center justify-center bg-[#f5f4ef] px-4 py-10 text-[#20211f] sm:py-14">
+            <div className="mx-auto w-full max-w-md space-y-8">
                 <div className="text-center space-y-2">
-                    <p className="text-sm text-slate-400 tracking-wide">Welcome back</p>
-                    <h1 className="text-3xl font-semibold text-white">Sign in</h1>
-                    <p className="text-xs text-slate-500">Use your account to access the chat app</p>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#747a70]">Welcome back</p>
+                    <h1 className="text-3xl font-semibold tracking-[-0.04em]">Sign in</h1>
+                    <p className="text-sm text-[#7d837a]">Use your account to access the chat app</p>
                 </div>
 
                 <form
                     onSubmit={handleSubmit}
-                    className="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl shadow-slate-950/50 p-6 space-y-5"
+                    className="space-y-5 rounded-2xl border border-[#deded6] bg-white p-6 shadow-[0_8px_25px_rgba(32,33,31,0.06)]"
                 >
                     <div className="space-y-2">
-                        <label className="block text-sm font-medium text-slate-200" htmlFor="email">
+                        <label className="block text-sm font-medium text-[#41453f]" htmlFor="email">
                             Email
                         </label>
                         <input
@@ -51,14 +50,14 @@ const Login = () => {
                             type="email"
                             value={form.email}
                             onChange={handleChange}
-                            className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition"
+                            className="w-full rounded-xl border border-[#deded6] bg-[#f8f8f4] px-4 py-3 text-[#20211f] placeholder:text-[#a0a49d] outline-none transition focus:border-[#a9bca5] focus:ring-2 focus:ring-[#c7d6c1]"
                             placeholder="you@example.com"
                             required
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="block text-sm font-medium text-slate-200" htmlFor="password">
+                        <label className="block text-sm font-medium text-[#41453f]" htmlFor="password">
                             Password
                         </label>
                         <input
@@ -67,7 +66,7 @@ const Login = () => {
                             type="password"
                             value={form.password}
                             onChange={handleChange}
-                            className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition"
+                            className="w-full rounded-xl border border-[#deded6] bg-[#f8f8f4] px-4 py-3 text-[#20211f] placeholder:text-[#a0a49d] outline-none transition focus:border-[#a9bca5] focus:ring-2 focus:ring-[#c7d6c1]"
                             placeholder="••••••••"
                             required
                         />
@@ -90,15 +89,15 @@ const Login = () => {
 
                     <button
                         type="submit"
-                        className="w-full rounded-lg bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition hover:bg-indigo-600 focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+                        className="w-full rounded-xl bg-[#20211f] px-4 py-3 text-sm font-semibold text-[#f8f8f4] shadow-[0_6px_14px_rgba(32,33,31,0.16)] transition hover:bg-[#3b3d38] focus:ring-2 focus:ring-[#a9bca5] focus:ring-offset-2 focus:ring-offset-[#f5f4ef]"
                     >
                         Sign in
                     </button>
                 </form>
 
-                <p className="text-center text-sm text-slate-400">
+                <p className="text-center text-sm text-[#7d837a]">
                     Don&apos;t have an account? {" "}
-                    <a href="/register" className="text-indigo-400 hover:text-indigo-300 font-medium">
+                    <a href="/register" className="font-medium text-[#436448] hover:text-[#385039]">
                         Create one
                     </a>
                 </p>

@@ -16,6 +16,9 @@ const Dashboard = () => {
     const chats = useSelector((state) => state.chat.chats)
     const currentChatId = useSelector((state) => state.chat.currentChatId)
     const activeChat = chats[currentChatId] || { title: 'New conversation', messages: [] }
+    const orderedChats = Object.values(chats).sort(
+      (firstChat, secondChat) => new Date(secondChat.createdAt || 0) - new Date(firstChat.createdAt || 0)
+    )
     useEffect(() => {
         initializeSocketConnection()
       handleGetChats()
@@ -45,7 +48,7 @@ const Dashboard = () => {
         setDraft('')
     }
 
-    const displayName = user?.name || user?.username || 'there'
+    const displayName =  user?.username || 'there'
 
   return (
     <main className="min-h-screen w-full bg-[#f5f4ef] text-[#20211f] lg:h-screen lg:overflow-hidden">
@@ -68,7 +71,7 @@ const Dashboard = () => {
           <nav className="mt-7 flex-1 overflow-y-auto px-3 pb-4" aria-label="Previous chats">
             <p className="px-2 pb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#858b81]">Recent</p>
             <div className="space-y-1">
-              {Object.values(chats).map((chatItem) => (
+              {orderedChats.map((chatItem) => (
                 <button key={chatItem._id} onClick={() => dispatch(setCurrentChatId(chatItem._id))} className={`w-full rounded-xl px-3 py-3 text-left transition ${currentChatId === chatItem._id ? 'bg-[#f7f7f2] shadow-[0_2px_8px_rgba(32,33,31,0.05)]' : 'hover:bg-[#dfe2db]'}`}>
                   <p className="truncate text-sm font-medium">{chatItem.title}</p>
                   <p className="mt-1 truncate text-xs text-[#7d837a]">{chatItem.messages?.at(-1)?.content || 'Start something new...'}</p>
