@@ -21,16 +21,28 @@ export async function register(req, res) {
             },
             process.env.JWT_SECRET
         );
+        const verificationUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/verify-email?token=${emailVerificationToken}`;
         await sendMail({
             to: email,
-            Subject: "Welcome to perplexity",
+            subject: "Verify your SnapSeek email",
             html: `
-                <h1>Welcome to perplexity</h1>
-                <p>Thank you for registering with us. We're excited to have you on board!</p>
-                <p>To get started, please verify your email address by clicking the link below:</p>
-                <a href="http://localhost:3000/api/auth/verify-email?token=${emailVerificationToken}">Verify your email</a>
+                <div style="margin: 0; padding: 48px 20px; background-color: #f5f4ef; color: #20211f; font-family: Arial, Helvetica, sans-serif;">
+                    <div style="max-width: 560px; margin: 0 auto;">
+                        <p style="margin: 0 0 8px; color: #747a70; font-size: 11px; font-weight: bold; letter-spacing: 3px; text-transform: uppercase;">SnapSeek</p>
+                        <h1 style="margin: 0 0 24px; color: #20211f; font-size: 28px; line-height: 1.2;">Verify your email</h1>
+
+                        <div style="padding: 36px; border: 1px solid #deded6; border-radius: 16px; background-color: #ffffff;">
+                            <div style="width: 54px; height: 54px; margin-bottom: 24px; border-radius: 14px; background-color: #dce8d8; color: #436448; font-size: 27px; line-height: 54px; text-align: center;">&#9993;</div>
+                            <p style="margin: 0 0 12px; color: #20211f; font-size: 22px; font-weight: bold; line-height: 1.3;">One quick step</p>
+                            <p style="margin: 0 0 28px; color: #697067; font-size: 15px; line-height: 1.7;">Thanks for joining SnapSeek. Confirm your email address to unlock your workspace and start your first conversation.</p>
+                            <a href="${verificationUrl}" style="display: inline-block; padding: 14px 22px; border-radius: 10px; background-color: #20211f; color: #f8f8f4; font-size: 14px; font-weight: bold; text-decoration: none;">Verify my email</a>
+                        </div>
+
+                        <p style="margin: 20px 0 0; color: #899087; font-size: 12px; line-height: 1.6;">This verification button will confirm your account. If you did not create a SnapSeek account, you can safely ignore this email.</p>
+                    </div>
+                </div>
                 `,
-            text: "Welcome to perplexity. Thank you for registering with us. We're excited to have you on board!"
+            text: `Thanks for joining SnapSeek. Verify your email here: ${verificationUrl}`
         })
         res.status(201).json({
             sucess: true,
@@ -109,7 +121,7 @@ export async function login(req, res) {
 }
 
 export async function verifyEmail(req, res) {
-    const {token} = req.query;
+    const { token } = req.body;
     if (!token) {
         return res.status(400).json({
             sucess: false,
@@ -129,11 +141,20 @@ export async function verifyEmail(req, res) {
         }
         user.verified = true
         await user.save();
-        res.send(`
-            <h1>Email verified successfully</h1>
-            <p>Your email has been verified successfully. You can now login to your account.</p>
-            <a href="http://localhost:3000/login">Go to login</a>
-        `)
+        const authToken = jwt.sign({
+            id: user._id,
+            username: user.username
+        }, process.env.JWT_SECRET, { expiresIn: "7d" });
+        res.cookie("token", authToken);
+        return res.status(200).json({
+            sucess: true,
+            message: "Email verified successfully",
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email
+            }
+        });
     } catch (error) {
         console.error("Error in email verification", error);
         res.status(500).json({
@@ -149,7 +170,7 @@ export async function getMe(req, res){
     const userId = req.user.id;
     const user = await userModel.findById(userId).select("-password");
     if (!user){
-        res.status(404).json({
+        return res.status(404).json({
             sucess: false,
             message: "User not found",
             err: "User not found"

@@ -30,12 +30,12 @@ router.post("/login", loginValidator , login )
 router.get("/get-me", authUser , getMe)
 
 /**
- * @route GET /api/auth/verify-email
+ * @route POST /api/auth/verify-email
  * @desc Verify email address
  * @access Public
- * @query { token: String }
+ * @body { token: String }
  */
-router.get("/verify-email", verifyEmail)
+router.post("/verify-email", verifyEmail)
 
 
 export default router;

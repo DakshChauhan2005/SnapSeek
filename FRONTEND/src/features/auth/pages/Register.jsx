@@ -16,7 +16,7 @@ const Register = () => {
     e.preventDefault();
     const payload = { ...form, accept };
     await handleRegister(payload);
-    navigate("/");
+    navigate("/verify-email");
     console.log({ ...form, accept });
   };
 
