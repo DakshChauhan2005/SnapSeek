@@ -1,52 +1,26 @@
 # SnapSeek
 
-SnapSeek is a chat application with a React frontend and an Express backend. It provides user authentication, a protected chat dashboard, Socket.IO support for real-time communication, MongoDB persistence, and AI service integrations.
-
-## Project Structure
-
-```text
-SnapSeek/
-├── BACKEND/     Express API, authentication, database, AI, mail, and sockets
-├── FRONTEND/    React + Vite user interface
-└── README.md
-```
-
-## Features
-
-- User registration and login
-- Protected chat dashboard
-- Previous chat list and new chat interface
-- Message composer and chat display
-- JWT authentication with cookies
-- MongoDB integration through Mongoose
-- Socket.IO server and client setup
-- AI service configuration for Gemini, Mistral, and Groq
+SnapSeek is a chat app with a React frontend and an Express backend. It includes user authentication, protected chats, real-time messaging, MongoDB storage, and AI integrations.
 
 ## Requirements
 
 - Node.js 18 or newer
-- MongoDB instance
-- API credentials for the services you plan to use
+- MongoDB
+- API keys for the services you want to use
 
 ## Setup
 
-### 1. Install dependencies
-
-Open two terminals and run:
+Install dependencies in both folders:
 
 ```bash
 cd BACKEND
 npm install
-```
 
-```bash
-cd FRONTEND
+cd ../FRONTEND
 npm install
 ```
 
-### 2. Configure the backend
-
-Create `BACKEND/.env` with the required values:
+Create `BACKEND/.env` and add the values needed by the backend:
 
 ```env
 PORT=3000
@@ -59,55 +33,37 @@ EMAIL_USER=your_email_address
 GOOGLE_APP_PASSWORD=your_google_app_password
 ```
 
-Only the variables required by the features you use need to be configured. Do not commit `.env` files or API keys.
+Do not commit `.env` files or API keys.
 
-## Running the Application
+## Run the App
 
-Start the backend:
+Open two terminals.
+
+Backend:
 
 ```bash
 cd BACKEND
 npm run dev
 ```
 
-The backend runs on `http://localhost:3000` by default.
-
-Start the frontend in a second terminal:
+Frontend:
 
 ```bash
 cd FRONTEND
 npm run dev
 ```
 
-The frontend runs on `http://localhost:5173` by default.
+The frontend runs at `http://localhost:5173` and the backend runs at `http://localhost:3000`.
 
-## Application Routes
+## Main Routes
 
-| Route | Description |
-| --- | --- |
-| `/login` | User login page |
-| `/register` | User registration page |
-| `/` | Protected chat dashboard |
-| `/dashboard` | Redirects to `/` |
+- `/login` - Login
+- `/register` - Create an account
+- `/` - Protected chat dashboard
 
-## Backend Endpoints
-
-- `/api/auth` handles authentication routes.
-- `/api/chats` handles chat routes.
-- `/` returns a basic API health response.
-- Socket.IO is initialized by the backend server for real-time chat communication.
-
-## Frontend Commands
+Frontend checks:
 
 ```bash
-npm run dev       # Start the Vite development server
-npm run lint      # Run ESLint
-npm run build     # Create a production build
-npm run preview   # Preview the production build
-```
-
-## Backend Commands
-
-```bash
-npm run dev       # Start the backend with nodemon
+npm run lint
+npm run build
 ```
