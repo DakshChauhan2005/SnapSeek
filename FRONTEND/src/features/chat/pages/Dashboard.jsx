@@ -8,7 +8,7 @@ import { setCurrentChatId } from '../chat.slice'
 
 
 const Dashboard = () => {
-    const { initializeSocketConnection, handleSendMessage, handleGetChats, handleGetMessages } = useChat()
+    const { initSocket, handleSendMessage, handleGetChats, handleGetMessages } = useChat()
     const [draft, setDraft] = useState('')
     const dispatch = useDispatch()
 
@@ -20,16 +20,15 @@ const Dashboard = () => {
       (firstChat, secondChat) => new Date(secondChat.createdAt || 0) - new Date(firstChat.createdAt || 0)
     )
     useEffect(() => {
-        initializeSocketConnection()
+      initSocket()
       handleGetChats()
-    }, [initializeSocketConnection, handleGetChats])
+    }, [initSocket, handleGetChats])
 
     useEffect(() => {
-      if (currentChatId) {
+      if (currentChatId && !chats[currentChatId]?.messages?.length) {
         handleGetMessages(currentChatId)
       }
-    }, [currentChatId, handleGetMessages])
-
+    }, [currentChatId, handleGetMessages, chats])
 
     const startNewChat = () => {
       dispatch(setCurrentChatId(null))

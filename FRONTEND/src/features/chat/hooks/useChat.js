@@ -1,4 +1,4 @@
-import { initializeSocketConnection } from "../services/chat.socket";
+import { initSocket } from "../chat.socket";
 import { useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { sendMessage, getChats, getMesseges, deleteChat } from "../services/chat.api";
@@ -13,10 +13,10 @@ import {
     appendStreamToken,
     finalizeStreamingMessage
 } from "../chat.slice";
-import { getSocket } from "../chat.socket";
+import { getSocket, joinChatRoom } from "../chat.socket";
 export const useChat = () => {
     const dispatch = useDispatch();
-
+    
     useEffect(() => {
         const socket = getSocket();
         if(!socket) return;
@@ -34,6 +34,8 @@ export const useChat = () => {
         socket.on("stream_event", onStreamEvent);
         return () => socket.off("stream_event", onStreamEvent);
     }, []);
+
+    
 
     const handleSendMessage = useCallback(async ({ message, chatId }) => {
         dispatch(setLoading(true));
@@ -89,7 +91,7 @@ export const useChat = () => {
         }
     }, [dispatch]);
     return {
-        initializeSocketConnection,
+        initSocket,
         handleSendMessage,
         handleGetChats,
         handleGetMessages,

@@ -61,6 +61,7 @@ export async function generateResponse(messages, onEvent) {
     let fullText = '';
 
     for await (const [chunk, metadata] of stream) {
+        if (chunk._getType() !== "ai") continue; 
         // chunk is an AIMessageChunk — has .content (text delta) and .tool_call_chunks
         if ( chunk.tool_call_chunks?.length) {
             for (const tc of chunk.tool_call_chunks) {
@@ -69,7 +70,7 @@ export async function generateResponse(messages, onEvent) {
         }
         if (chunk.content) {
             fullText += chunk.content;
-            onEvent({ type: "message", content: chunk.content });
+            onEvent({ type: "token", content: chunk.content });
         }
     }
 

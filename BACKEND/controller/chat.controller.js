@@ -54,14 +54,14 @@ export async function sendMessage(req, res) {
         //     chat,
         //     aiMessage,
         // });
-        res.status(202).json({message, chatId});
+        res.status(202).json({ chat, messages });
 
         const io = getIO();
         const result = await generateResponse(messages, (event) => {
-            io.to(chat._id.toString()).emit('stream_event', event);
+            io.to(chat._id.toString()).emit('stream_event', { ...event, chatId: chat._id.toString() });
         });
         await messageModel.create({chat: chat._id, content: result, role: 'assistant'});
-        io.to(chat._id.toString()).emit('steam_event', { type: 'saved' });
+        io.to(chat._id.toString()).emit('steam_event', { type: 'done' });
     } catch (error) {
         console.error('sendMessage error:', error);
         res.status(500).json({ message: 'Failed to send message' });
