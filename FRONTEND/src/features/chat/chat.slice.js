@@ -52,6 +52,22 @@ const chatSlice = createSlice({
             const { chatId, message, role} = action.payload;
             state.chats[chatId].messages.push({ content: message, role });
         },
+        appendStreamToken: (state, action) => {
+            const { chatId, token } = action.payload;
+            const messages = state.chats[chatId]?.messages;
+            if (!messages) return;
+            const last = messages[messages.length - 1];
+            if (last?.role === "assistant" && last.streaming) {
+                last.content += token;
+            }
+        },
+        finalizeStreamingMessage: (state, action) => {
+            const { chatId } = action.payload;
+            const messages = state.chats[chatId]?.messages;
+            if (!messages) return;
+            const last = messages[messages.length - 1];
+            if (last?.role === "assistant") last.streaming = false;
+        },
     },
 });
 export const {
@@ -63,5 +79,7 @@ export const {
     setLoading,
     setError,
     addMessageToChat,
+    appendStreamToken,
+    finalizeStreamingMessage,
 } = chatSlice.actions;
 export default chatSlice.reducer;

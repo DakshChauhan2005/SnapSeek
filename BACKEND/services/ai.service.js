@@ -18,6 +18,7 @@ const GroqModel = new ChatGroq({
   model: "openai/gpt-oss-20b",
   apiKey: process.env.GROQ_API_KEY, // from console.groq.com/keys
   maxRetries: 1,
+  streaming: true,
 });
 
 const WebSearchTool = tool(
@@ -37,18 +38,46 @@ const agent = createAgent({
 });
 
 
-export async function generateResponse(messages) {
-    const response = await agent.invoke({
-        messages: messages.map(msg => {
-            if (msg.role == 'user') {
-                return new HumanMessage(msg.content);
-            } else if (msg.role == 'assistant') {
-                return new AIMessage(msg.content);
-            }
-        })
-    });
-    return response.messages[response.messages.length - 1].text;
+// export async function generateResponse(messages) {
+//     const response = await agent.invoke({
+//         messages: messages.map(msg => {
+//             if (msg.role == 'user') {
+//                 return new HumanMessage(msg.content);
+//             } else if (msg.role == 'assistant') {
+//                 return new AIMessage(msg.content);
+//             }
+//         })
+//     });
+//     return response.messages[response.messages.length - 1].text;
+// }
+export async function generateResponse(messages, onEvent) {
+    const stream = await agent.stream({
+        messages: messages.map(msg => 
+            msg.role === 'user' ?
+            new HumanMessage(msg.content) :
+            new AIMessage(msg.content)
+        ),
+    },{streamMode: "messages"});
+    let fullText = '';
+
+    for await (const [chunk, metadata] of stream) {
+        // chunk is an AIMessageChunk — has .content (text delta) and .tool_call_chunks
+        if ( chunk.tool_call_chunks?.length) {
+            for (const tc of chunk.tool_call_chunks) {
+                if (tc.name) onEvent({ type: "tool_call", name: tc.name });
+            } 
+        }
+        if (chunk.content) {
+            fullText += chunk.content;
+            onEvent({ type: "message", content: chunk.content });
+        }
+    }
+
+    onEvent({ type: "done", content: fullText });
+    return fullText;
 }
+
+
 
 export async function generateChatTittle(messages) {
     const response =  await GroqModel.invoke(

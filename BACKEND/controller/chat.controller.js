@@ -2,6 +2,8 @@ import { generateResponse, generateChatTittle} from '../services/ai.service.js';
 import chatModel from '../model/chat.model.js';
 import messageModel from '../model/message.model.js';
 import mongoose from 'mongoose';
+import {getIO} from '../socket/server.socket.js'; 
+
 
 export async function sendMessage(req, res) {
     try {
@@ -38,20 +40,28 @@ export async function sendMessage(req, res) {
             .find({ chat: chat._id })
             .sort({ createdAt: 1 });
 
-        const result = await generateResponse(messages);
+        // const result = await generateResponse(messages);
 
-        const aiMessage = await messageModel.create({
-            chat: chat._id,
-            content: result,
-            role: 'assistant',
-        });
+        // const aiMessage = await messageModel.create({
+        //     chat: chat._id,
+        //     content: result,
+        //     role: 'assistant',
+        // });
 
-        res.status(201).json({
-            message,
-            title,
-            chat,
-            aiMessage,
+        // res.status(201).json({
+        //     message,
+        //     title,
+        //     chat,
+        //     aiMessage,
+        // });
+        res.status(202).json({message, chatId});
+
+        const io = getIO();
+        const result = await generateResponse(messages, (event) => {
+            io.to(chat._id.toString()).emit('stream_event', event);
         });
+        await messageModel.create({chat: chat._id, content: result, role: 'assistant'});
+        io.to(chat._id.toString()).emit('steam_event', { type: 'saved' });
     } catch (error) {
         console.error('sendMessage error:', error);
         res.status(500).json({ message: 'Failed to send message' });

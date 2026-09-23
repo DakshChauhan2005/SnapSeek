@@ -1,4 +1,3 @@
-import { log } from 'console';
 import {Server} from 'socket.io';
 
 let io;
@@ -14,6 +13,15 @@ export function initSocket(httpServer) {
     console.log("Socket.io initialized");
     io.on('connection', (socket) => {
         console.log("A user is connected: " + socket.id);
+
+        socket.on('join_chat', (chatId) => {
+            socket.join(chatId);
+            console.log(`Socket ${socket.id} joined chat ${chatId}`);
+        });
+
+        socket.on('disconnect', () => {
+            console.log("A user disconnected: " + socket.id);
+        });
     });
 }
 export function getIO() {
