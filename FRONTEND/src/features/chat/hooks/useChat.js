@@ -81,9 +81,6 @@ export const useChat = () => {
                 chats.map((chat) => [chat._id, { ...chat, messages: chat.messages || [] }])
             );
             dispatch(setChats(chatsById));
-            if (chats.length > 0) {
-                dispatch(setCurrentChatId(chats[0]._id));
-            }
         } catch (error) {
             dispatch(setError(error.response?.data?.message || 'Failed to fetch chats'));
         } finally {

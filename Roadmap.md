@@ -4,7 +4,7 @@
 
 These aren't "nice to have" — they're normal parts of an auth flow that are currently just absent.
 
-- [ ] **Logout — frontend and backend, neither exists yet**
+- [x] **Logout — frontend and backend, neither exists yet**
   There's no `logout` function in `auth.api.js`, no handler in `useAuth.js`, and no `/api/auth/logout` route on the backend. The profile section in `Dashboard.jsx`'s sidebar has no click handler at all.
   Needed pieces:
   - Backend: `POST /api/auth/logout` — clears the `token` cookie (`res.clearCookie("token")`). Optionally also delete the matching `Device` row for `{userId, deviceType}` so the slot is freed immediately instead of waiting for another device to overwrite it.

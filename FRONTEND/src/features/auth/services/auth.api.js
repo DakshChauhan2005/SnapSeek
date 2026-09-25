@@ -27,3 +27,8 @@ export async function verifyEmail(token) {
   const response = await api.post("/api/auth/verify-email", { token, deviceId: getDeviceId() });
   return response.data;
 }
+
+export async function logout() {
+  const response = await api.post("/api/auth/logout", { deviceId: getDeviceId() });
+  return response.data;
+}

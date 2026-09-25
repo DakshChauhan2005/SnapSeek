@@ -1,4 +1,5 @@
 import userModel from "../model/user.model.js";
+import deviceModel from "../model/device.model.js";
 import { getDeviceType, upsertDeviceSession, getClientIp } from "../services/device.service.js";
 import { sendMail } from "../services/mail.service.js";
 import jwt from "jsonwebtoken";
@@ -219,4 +220,31 @@ export async function getMe(req, res){
         succes: true,
         user
     })
+}
+
+export async function logout(req, res){
+    try{
+        const userId = req.user.id;
+        const deviceId = req.user.deviceId;
+        if(!deviceId){
+            return res.status(400).json({
+                sucess: false,
+                message: "deviceId is required",
+                err: "Missing deviceId"
+            })
+        }
+        await deviceModel.findOneAndDelete({ userId, deviceId });
+        res.clearCookie("token");
+        res.status(200).json({
+            sucess: true,
+            message: "Logout successful"
+        })
+    } catch (error){
+        console.error("Error in user logout", error);
+        res.status(500).json({
+            sucess: false,
+            message: "Internal Server Error",
+            err: error.message
+        })
+    }
 }

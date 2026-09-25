@@ -5,6 +5,7 @@ import VerifyMail from "../features/auth/pages/VerifyMail";
 import Dashboard from "../features/chat/pages/Dashboard";
 import Protected from "../features/auth/components/Protected";
 import { Navigate } from "react-router";
+import Logout from "../features/auth/pages/Logout";
 export const router = createBrowserRouter([
     {
         path: "/login",
@@ -27,5 +28,11 @@ export const router = createBrowserRouter([
     {
         path: "/dashboard",
         element: <Navigate to="/" replace />
+    },
+    {
+        path: "/logout",
+        element: <Protected>
+            <Logout/>
+        </Protected>
     }
 ])

@@ -1,6 +1,6 @@
 import {Router} from "express";
 import { loginValidator, registerValidation } from "../validator/auth.validator.js";
-import { getMe, login, register, verifyEmail } from "../controller/auth.controller.js";
+import { getMe, login, register, verifyEmail, logout } from "../controller/auth.controller.js";
 import { authUser } from "../middleware/auth.middleware.js";
 const router = Router();
 
@@ -36,6 +36,15 @@ router.get("/get-me", authUser , getMe)
  * @body { token: String }
  */
 router.post("/verify-email", verifyEmail)
+
+/** 
+ * @route POST /api/auth/logout
+ * @desc Logout user and clear JWT token
+ * @access Private
+ * @body { deviceId: String }
+ */
+
+router.post("/logout", authUser, logout)
 
 
 export default router;
