@@ -22,6 +22,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/chats', chatRouter);
 // Example route
 app.get('/', (req, res) => {
+  console.log("ip",req.ip);
+  console.log("headers",req.headers);
   res.json({ message: 'Hello, World!' });
 });
 

@@ -1,4 +1,5 @@
 import userModel from "../model/user.model.js";
+import { getDeviceType, upsertDeviceSession, getClientIp } from "../services/device.service.js";
 import { sendMail } from "../services/mail.service.js";
 import jwt from "jsonwebtoken";
 
@@ -69,7 +70,7 @@ export async function register(req, res) {
 
 
 export async function login(req, res) {
-    const {email , password} = req.body;
+    const {email , password, deviceId} = req.body;
     try {
         const user = await userModel.findOne({email});
         if (!user) {
@@ -94,13 +95,31 @@ export async function login(req, res) {
                 err: "Email not verified"
             })
         }
+        if (!deviceId) {
+            return res.status(400).json({
+                sucess: false,
+                message: "deviceId is required", 
+                err: "Missing deviceId" 
+            });
+        }
+
+        const userAgent = req.headers['user-agent'] || "";
+        const deviceType = getDeviceType(userAgent);
+        const lastIp = getClientIp(req);
+
+        await upsertDeviceSession({ userId: user._id, deviceType, deviceId, userAgent, lastIp });
+
+
 
         const token = jwt.sign({
             id: user._id,
-            username: user.username
+            username: user.username,
+            deviceType,
+            deviceId
         }, process.env.JWT_SECRET, {expiresIn: "7d"})
         
-        res.cookie("token", token )
+        res.cookie("token", token );
+
         res.status(200).json({
             sucess: true,
             message: "Login successful",
@@ -121,13 +140,20 @@ export async function login(req, res) {
 }
 
 export async function verifyEmail(req, res) {
-    const { token } = req.body;
+    const { token, deviceId} = req.body;
     if (!token) {
         return res.status(400).json({
             sucess: false,
             message: "Token is required",
             err: "Token is required"
         })
+    }
+    if (!deviceId) {
+        return res.status(400).json({ 
+            sucess: false, 
+            message: "deviceId is required", 
+            err: "Missing deviceId" 
+        });
     }
     try {
         const decoded = jwt.verify(token , process.env.JWT_SECRET)
@@ -141,11 +167,22 @@ export async function verifyEmail(req, res) {
         }
         user.verified = true
         await user.save();
+
+        const userAgent = req.headers["user-agent"] || "";
+        const deviceType = getDeviceType(userAgent);
+        const ip = getClientIp(req);
+        await upsertDeviceSession({ userId: user._id, deviceType, deviceId, userAgent, ip });
+
+
         const authToken = jwt.sign({
             id: user._id,
-            username: user.username
+            username: user.username,
+            deviceType,
+            deviceId
         }, process.env.JWT_SECRET, { expiresIn: "7d" });
+
         res.cookie("token", authToken);
+        
         return res.status(200).json({
             sucess: true,
             message: "Email verified successfully",

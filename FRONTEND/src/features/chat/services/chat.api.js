@@ -1,14 +1,14 @@
-import axios from 'axios';
+// import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000';
-
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  withCredentials: true,
-});
+const API_BASE_URL =  import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+import api from '../../../utils/axios.api';
+// const api = axios.create({
+//   baseURL: API_BASE_URL,
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+//   withCredentials: true,
+// });
 
 export const sendMessage = async (chatId, message) => {
     const response = await api.post('/api/chats/message', { chatId, message });
