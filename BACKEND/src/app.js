@@ -9,7 +9,7 @@ import chatRouter from '../routes/chat.routes.js';
 
 const app = express();
 app.use(cors({
-  origin: 'http://localhost:5173', // Adjust this to your frontend URL
+  origin: process.env.CORS_ORIGIN || 'http://localhost:5173', // Adjust this to your frontend URL
   credentials: true, // Allow cookies to be sent
 }));
 app.use(cookieParser());

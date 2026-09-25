@@ -170,8 +170,8 @@ export async function verifyEmail(req, res) {
 
         const userAgent = req.headers["user-agent"] || "";
         const deviceType = getDeviceType(userAgent);
-        const ip = getClientIp(req);
-        await upsertDeviceSession({ userId: user._id, deviceType, deviceId, userAgent, ip });
+        const lastIp = getClientIp(req);
+        await upsertDeviceSession({ userId: user._id, deviceType, deviceId, userAgent, lastIp });
 
 
         const authToken = jwt.sign({
