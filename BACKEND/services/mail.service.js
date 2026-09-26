@@ -1,4 +1,7 @@
+import dns from 'node:dns';
 import nodemailer from 'nodemailer';
+
+dns.setDefaultResultOrder('ipv4first');
 
 // const transporter = nodemailer.createTransport({
 //     service: 'gmail',
@@ -13,14 +16,17 @@ import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
+  port: 587,
+  secure: false,
+  requireTLS: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.GOOGLE_APP_PASSWORD,
   },
-  family: 4, // force IPv4 - avoids Render's IPv6 ENETUNREACH/ETIMEDOUT to Gmail SMTP
+  family: 4,
   connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 15000,
 });
 transporter.verify()
     .then(() => {        
