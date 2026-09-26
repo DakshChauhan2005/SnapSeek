@@ -42,7 +42,9 @@ export async function sendMail({ to, subject, html, text }) {
 
         const details = await transporter.sendMail(mailOption);
         console.log("Email sent", details);
+        return { success: true };
     } catch (error) {
         console.error("Error sending email", error);
+        return { success: false, error: error.message };
     }
 }

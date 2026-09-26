@@ -1,5 +1,6 @@
 import dns from 'dns';
 dns.setServers(['8.8.8.8', '1.1.1.1']);
+dns.setDefaultResultOrder('ipv4first');
 import dotenv from 'dotenv';
 dotenv.config();
 const { default: app } = await import("./src/app.js");
