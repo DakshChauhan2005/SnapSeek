@@ -24,7 +24,7 @@ export async function register(req, res) {
             process.env.JWT_SECRET
         );
         const verificationUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/verify-email?token=${emailVerificationToken}`;
-        await sendMail({
+        sendMail({
             to: email,
             subject: "Verify your SnapSeek email",
             html: `
@@ -182,7 +182,7 @@ export async function verifyEmail(req, res) {
             deviceId
         }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
-        res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "none" })    
+        res.cookie("token", authToken, { httpOnly: true, secure: true, sameSite: "none" })    
 
         return res.status(200).json({
             sucess: true,
