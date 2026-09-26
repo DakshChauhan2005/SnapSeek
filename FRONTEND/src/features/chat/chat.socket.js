@@ -5,7 +5,7 @@ let socket = null;
 export function initSocket() {
     if(socket) return socket;
 
-    socket = io("http://localhost:3000", {
+    socket = io(import.meta.env.VITE_API_BASE_URL, {
         withCredentials: true,
     } );
 
