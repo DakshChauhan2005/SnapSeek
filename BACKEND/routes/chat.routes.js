@@ -1,9 +1,10 @@
 import {Router} from 'express';
 import { sendMessage, getChats, getMessages, deleteChat } from '../controller/chat.controller.js';
 import {authUser} from '../middleware/auth.middleware.js';
+import chatLimiter from '../middleware/authLimiter.middleware.js';
 const chatRouter = Router();
 
-chatRouter.post('/message',authUser,sendMessage);
+chatRouter.post('/message',authUser, chatLimiter, sendMessage);
 chatRouter.post('/',authUser,getChats);
 chatRouter.get('/:chatId/messeges',authUser,getMessages);
 chatRouter.delete('/:chatId/delete',authUser, deleteChat );

@@ -2,6 +2,7 @@ import {Router} from "express";
 import { loginValidator, registerValidation } from "../validator/auth.validator.js";
 import { getMe, login, register, verifyEmail, logout } from "../controller/auth.controller.js";
 import { authUser } from "../middleware/auth.middleware.js";
+import authLimiter from "../middleware/authLimiter.middleware.js";
 const router = Router();
 
 
@@ -11,7 +12,7 @@ const router = Router();
  * @access Public
  * @body { username: String, email: String, password: String 
  */
-router.post("/register", registerValidation, register )
+router.post("/register",authLimiter , registerValidation, register )
 
 /**
  * @route POST /api/auth/login
@@ -19,7 +20,7 @@ router.post("/register", registerValidation, register )
  * @access Public
  * @body { email: String, password: String }
  */
-router.post("/login", loginValidator , login )
+router.post("/login",authLimiter , loginValidator , login )
 
 
 /**

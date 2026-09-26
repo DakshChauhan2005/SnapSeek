@@ -9,8 +9,8 @@ import chatRouter from '../routes/chat.routes.js';
 
 const app = express();
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173', // Adjust this to your frontend URL
-  credentials: true, // Allow cookies to be sent
+  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  credentials: true,
 }));
 app.use(cookieParser());
 app.use(express.json());
@@ -20,7 +20,6 @@ app.use(morgan('dev'));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/chats', chatRouter);
-// Example route
 app.get('/', (req, res) => {
   console.log("ip",req.ip);
   console.log("headers",req.headers);
