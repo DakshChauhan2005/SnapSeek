@@ -15,9 +15,10 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = { ...form, accept };
-    await handleRegister(payload);
-    navigate("/verify-email");
-    console.log({ ...form, accept });
+    const isRegistered = await handleRegister(payload);
+    if (isRegistered) {
+      navigate("/verify-email");
+    }
   };
 
   return (

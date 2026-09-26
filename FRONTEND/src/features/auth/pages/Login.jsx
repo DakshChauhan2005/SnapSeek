@@ -19,8 +19,10 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const payload = { email: form.email, password: form.password };
-        await handleLogin(payload);
-        navigate("/")
+        const isLoggedIn = await handleLogin(payload);
+        if (isLoggedIn) {
+            navigate("/");
+        }
     };
 
 

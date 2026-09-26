@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import { register, login, getMe, logout } from "../services/auth.api";
 import { setUser, setError, setLoading } from "../auth.slice";
+import { toast } from "react-toastify";
 
 
 
@@ -14,8 +15,12 @@ export function useAuth() {
         try {
             dispatch(setLoading(true));
             await register({ username, email, password });
+            return true;
         } catch (err) {
-            dispatch(setError(err.response?.data?.message || "Registration failed"));
+            const message = err.response?.data?.message || "Registration failed";
+            dispatch(setError(message));
+            toast.error(message);
+            return false;
         } finally {
             dispatch(setLoading(false));
         }
@@ -26,8 +31,12 @@ export function useAuth() {
             dispatch(setLoading(true));
             const data = await login({ email, password });
             dispatch(setUser(data.user));
+            return true;
         } catch (err) {
-            dispatch(setError(err.response?.data?.message || "Login failed"));
+            const message = err.response?.data?.message || "Login failed";
+            dispatch(setError(message));
+            toast.error(message);
+            return false;
         } finally {
             dispatch(setLoading(false));
         }
@@ -48,7 +57,7 @@ export function useAuth() {
     async function handleLogout() {
         try {
             dispatch(setLoading(true));
-            const data = await logout();
+            await logout();
             dispatch(setUser(null));
         } catch (err) {
             dispatch(setError(err.response?.data?.message || "Logout failed"));
