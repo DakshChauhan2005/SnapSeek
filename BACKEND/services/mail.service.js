@@ -3,6 +3,9 @@ import nodemailer from 'nodemailer';
 
 dns.setDefaultResultOrder('ipv4first');
 
+const smtpHost = 'smtp.gmail.com';
+const { address: smtpAddress } = await dns.promises.lookup(smtpHost, { family: 4 });
+
 // const transporter = nodemailer.createTransport({
 //     service: 'gmail',
 //     auth: {
@@ -15,10 +18,13 @@ dns.setDefaultResultOrder('ipv4first');
 // });
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+    host: smtpAddress,
   port: 587,
   secure: false,
   requireTLS: true,
+    tls: {
+        servername: smtpHost,
+    },
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.GOOGLE_APP_PASSWORD,
