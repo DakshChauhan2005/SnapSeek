@@ -21,8 +21,6 @@ app.use(morgan('dev'));
 app.use('/api/auth', authRoutes);
 app.use('/api/chats', chatRouter);
 app.get('/', (req, res) => {
-  console.log("ip",req.ip);
-  console.log("headers",req.headers);
   res.json({ message: 'Hello, World!' });
 });
 app.get('/health', (req, res) => {
