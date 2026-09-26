@@ -25,5 +25,8 @@ app.get('/', (req, res) => {
   console.log("headers",req.headers);
   res.json({ message: 'Hello, World!' });
 });
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', uptime: process.uptime() });
+});
 
 export default app;

@@ -32,9 +32,9 @@ router.get("/get-me", authUser , getMe)
 
 /**
  * @route POST /api/auth/verify-email
- * @desc Verify email address
+ * @desc Verify user email with token
  * @access Public
- * @body { token: String }
+ * @body { token: String, deviceId: String }
  */
 router.post("/verify-email", verifyEmail)
 
