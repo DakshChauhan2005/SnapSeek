@@ -12,8 +12,12 @@ const api = axios.create({
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 && error.response?.data?.err === "Device mismatch") {
-      window.location.href = "/login"; // hard redirect clears all in-memory state cleanly
+    if (
+      error.response?.status === 401 &&
+      error.response?.data?.err === "Device mismatch" &&
+      window.location.pathname !== "/login"
+    ) {
+      window.location.replace("/login");
     }
     return Promise.reject(error);
   }
