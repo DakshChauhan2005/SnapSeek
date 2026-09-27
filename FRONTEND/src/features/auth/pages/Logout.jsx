@@ -3,11 +3,11 @@ import {useEffect} from "react";
 
 const Logout = () => {
     const { handleLogout } = useAuth();
-    const logoutUser = async () => {
-        await handleLogout();
-    }
-    logoutUser();
 
+    useEffect(() => {
+        handleLogout();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-[#f5f4ef] px-4 py-10 text-[#20211f] sm:py-14">

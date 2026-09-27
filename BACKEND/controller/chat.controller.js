@@ -7,7 +7,7 @@ import {getIO} from '../socket/server.socket.js';
 
 export async function sendMessage(req, res) {
     try {
-        const { message, chatId } = req.body;
+        const { message, chatId, socketId } = req.body;
         let chat;
         let title = '';
 
@@ -40,31 +40,42 @@ export async function sendMessage(req, res) {
             .find({ chat: chat._id })
             .sort({ createdAt: 1 });
 
-        // const result = await generateResponse(messages);
-
-        // const aiMessage = await messageModel.create({
-        //     chat: chat._id,
-        //     content: result,
-        //     role: 'assistant',
-        // });
-
-        // res.status(201).json({
-        //     message,
-        //     title,
-        //     chat,
-        //     aiMessage,
-        // });
         res.status(202).json({ chat, messages });
 
         const io = getIO();
-        const result = await generateResponse(messages, (event) => {
-            io.to(chat._id.toString()).emit('stream_event', { ...event, chatId: chat._id.toString() });
-        });
-        await messageModel.create({chat: chat._id, content: result, role: 'assistant'});
-        // io.to(chat._id.toString()).emit('stream_event', { type: 'done' });
+        const roomId = chat._id.toString();
+
+        // Join this request's socket to the room synchronously, in the same
+        // tick as the request — no second round trip, no race with streaming.
+        if (socketId) {
+            const clientSocket = io.sockets.sockets.get(socketId);
+            if (clientSocket) {
+                clientSocket.join(roomId);
+            }
+        }
+
+        // Generation errors (e.g. malformed tool-call JSON from the model)
+        // must NOT bubble up to the outer catch below — the HTTP response
+        // was already sent, so touching `res` again throws ERR_HTTP_HEADERS_SENT
+        // and the failure gets silently swallowed with no client-side signal.
+        try {
+            const result = await generateResponse(messages, (event) => {
+                io.to(roomId).emit('stream_event', { ...event, chatId: roomId });
+            });
+            await messageModel.create({ chat: chat._id, content: result, role: 'assistant' });
+        } catch (genError) {
+            console.error('generateResponse failed:', genError);
+            io.to(roomId).emit('stream_event', {
+                type: 'error',
+                chatId: roomId,
+                message: 'Something went wrong generating a response. Please try again.',
+            });
+        }
     } catch (error) {
         console.error('sendMessage error:', error);
-        res.status(500).json({ message: 'Failed to send message' });
+        if (!res.headersSent) {
+            res.status(500).json({ message: 'Failed to send message' });
+        }
     }
 }
 export async function getChats(req, res) {

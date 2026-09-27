@@ -17,7 +17,7 @@ const MistralModel = new ChatMistralAI({
 const GroqModel = new ChatGroq({
   model: "openai/gpt-oss-20b",
   apiKey: process.env.GROQ_API_KEY, // from console.groq.com/keys
-  maxRetries: 1,
+  maxRetries: 3, // Groq occasionally streams malformed tool-call JSON; retry before giving up
   streaming: true,
 });
 
@@ -38,18 +38,6 @@ const agent = createAgent({
 });
 
 
-// export async function generateResponse(messages) {
-//     const response = await agent.invoke({
-//         messages: messages.map(msg => {
-//             if (msg.role == 'user') {
-//                 return new HumanMessage(msg.content);
-//             } else if (msg.role == 'assistant') {
-//                 return new AIMessage(msg.content);
-//             }
-//         })
-//     });
-//     return response.messages[response.messages.length - 1].text;
-// }
 export async function generateResponse(messages, onEvent) {
     const stream = await agent.stream({
         messages: messages.map(msg => 

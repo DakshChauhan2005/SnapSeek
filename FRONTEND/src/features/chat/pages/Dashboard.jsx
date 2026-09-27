@@ -14,6 +14,7 @@ const Dashboard = () => {
   const user = useSelector((state) => state.auth.user)
   const chats = useSelector((state) => state.chat.chats)
   const currentChatId = useSelector((state) => state.chat.currentChatId)
+  const isLoading = useSelector((state) => state.chat.isLoading)
   const activeChat = chats[currentChatId] || { title: 'New conversation', messages: [] }
 
   useEffect(() => {
@@ -34,6 +35,7 @@ const Dashboard = () => {
 
   const onSendMessage = (event) => {
     event.preventDefault()
+    if (isLoading) return
     const text = draft.trim()
     if (!text) return
 
@@ -61,6 +63,7 @@ const Dashboard = () => {
           draft={draft}
           onDraftChange={setDraft}
           onSendMessage={onSendMessage}
+          isLoading={isLoading}
         />
       </div>
     </main>

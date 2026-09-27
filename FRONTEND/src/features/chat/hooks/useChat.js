@@ -28,6 +28,10 @@ export const useChat = () => {
             } else if (type === "done" || type === "saved") {
                 dispatch(finalizeStreamingMessage({ chatId }));
                 dispatch(setLoading(false));
+            } else if (type === "error") {
+                dispatch(finalizeStreamingMessage({ chatId }));
+                dispatch(setLoading(false));
+                dispatch(setError(event.message || 'Failed to generate a response'));
             }
             // type === "tool_call" → hook up a "searching..." indicator later
         }
@@ -64,6 +68,7 @@ export const useChat = () => {
     const handleGetMessages = useCallback(async (chatId) => {
         dispatch(setError(null));
         try {
+            joinChatRoom(chatId);
             const response = await getMesseges(chatId);
             dispatch(setChatMessages({ chatId, messages: response.messages || [] }));
         } catch (error) {

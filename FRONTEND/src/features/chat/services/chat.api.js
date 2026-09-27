@@ -2,6 +2,7 @@
 
 const API_BASE_URL =  import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 import api from '../../../utils/axios.api';
+import { getSocketId } from '../chat.socket';
 // const api = axios.create({
 //   baseURL: API_BASE_URL,
 //   headers: {
@@ -11,7 +12,8 @@ import api from '../../../utils/axios.api';
 // });
 
 export const sendMessage = async (chatId, message) => {
-    const response = await api.post('/api/chats/message', { chatId, message });
+    const socketId = getSocketId();
+    const response = await api.post('/api/chats/message', { chatId, message, socketId });
     return response.data;
 }
 

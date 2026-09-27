@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux";
 import { register, login, getMe, logout } from "../services/auth.api";
 import { setUser, setError, setLoading } from "../auth.slice";
 import { toast } from "react-toastify";
+import { disconnectSocket } from "../../chat/chat.socket";
 
 
 
@@ -62,6 +63,7 @@ export function useAuth() {
         } catch (err) {
             dispatch(setError(err.response?.data?.message || "Logout failed"));
         } finally {
+            disconnectSocket();
             dispatch(setLoading(false));
         }
     }

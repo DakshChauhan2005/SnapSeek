@@ -2,7 +2,7 @@ import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
-const ConversationPanel = ({ activeChat, displayName, draft, onDraftChange, onSendMessage }) => (
+const ConversationPanel = ({ activeChat, displayName, draft, onDraftChange, onSendMessage, isLoading }) => (
   <section className="flex min-h-[calc(100vh-180px)] flex-1 flex-col bg-[#f8f8f4] lg:min-h-0">
     <header className="flex items-center justify-between border-b border-[#e4e4dc] px-5 py-4 sm:px-8">
       <div>
@@ -36,8 +36,8 @@ const ConversationPanel = ({ activeChat, displayName, draft, onDraftChange, onSe
     <div className="px-5 pb-5 pt-2 sm:px-8 sm:pb-8 lg:px-[clamp(2rem,9vw,9rem)]">
       <form onSubmit={onSendMessage} className="mx-auto flex max-w-3xl items-end gap-3 rounded-2xl border border-[#deded6] bg-white p-2 pl-4 shadow-[0_8px_25px_rgba(32,33,31,0.06)] focus-within:border-[#a9bca5]">
         <label htmlFor="message" className="sr-only">Write a message</label>
-        <textarea id="message" value={draft} onChange={(event) => onDraftChange(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); onSendMessage(event) } }} rows="1" placeholder="Message SnapSeek..." className="max-h-32 min-h-10 flex-1 resize-none bg-transparent py-2 text-sm outline-none placeholder:text-[#a0a49d]" />
-        <button type="submit" aria-label="Send message" disabled={!draft.trim()} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#20211f] text-lg text-white transition hover:bg-[#4a5e49] disabled:cursor-not-allowed disabled:bg-[#d8dbd4]">↑</button>
+        <textarea id="message" value={draft} onChange={(event) => onDraftChange(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); if (!isLoading) onSendMessage(event) } }} rows="1" placeholder="Message SnapSeek..." className="max-h-32 min-h-10 flex-1 resize-none bg-transparent py-2 text-sm outline-none placeholder:text-[#a0a49d]" />
+        <button type="submit" aria-label="Send message" disabled={!draft.trim() || isLoading} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#20211f] text-lg text-white transition hover:bg-[#4a5e49] disabled:cursor-not-allowed disabled:bg-[#d8dbd4]">↑</button>
       </form>
       <p className="mt-3 text-center text-[10px] text-[#a0a49d]">SnapSeek can make mistakes. Check important information.</p>
     </div>
