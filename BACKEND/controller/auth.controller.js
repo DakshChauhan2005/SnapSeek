@@ -24,7 +24,7 @@ export async function register(req, res) {
             process.env.JWT_SECRET
         );
         const verificationUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/verify-email?token=${emailVerificationToken}`;
-        const mailResult = await sendMail({
+        const mailResponse = await sendMail({
             to: email,
             subject: "Verify your SnapSeek email",
             html: `
@@ -45,17 +45,15 @@ export async function register(req, res) {
                 </div>
                 `,
             text: `Thanks for joining SnapSeek. Verify your email here: ${verificationUrl}`
-        });
-
-        if (!mailResult.success) {
-            await userModel.deleteOne({ _id: user._id });
-            return res.status(503).json({
+        })
+        if (!mailResponse) {
+            console.error("Error sending verification email");
+            return res.status(500).json({
                 sucess: false,
                 message: "Registration could not be completed because the verification email could not be sent. Please try again later.",
                 err: "Email delivery failed"
             });
         }
-
         res.status(201).json({
             sucess: true,
             message: "User registered successfully",
