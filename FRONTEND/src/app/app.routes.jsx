@@ -6,6 +6,7 @@ import Dashboard from "../features/chat/pages/Dashboard";
 import Protected from "../features/auth/components/Protected";
 import { Navigate } from "react-router";
 import Logout from "../features/auth/pages/Logout";
+import BrandPage from "../features/auth/pages/BrandPage";
 export const router = createBrowserRouter([
     {
         path: "/login",
@@ -21,13 +22,13 @@ export const router = createBrowserRouter([
     },
     {
         path: "/",
-        element: <Protected>
-            <Dashboard />
-        </Protected>
+        element: <BrandPage />
     },
     {
         path: "/dashboard",
-        element: <Navigate to="/" replace />
+        element: <Protected>
+            <Dashboard />
+        </Protected>
     },
     {
         path: "/logout",

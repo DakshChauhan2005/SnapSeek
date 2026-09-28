@@ -6,7 +6,7 @@ import Sidebar from '../components/Sidebar'
 import ConversationPanel from '../components/ConversationPanel'
 
 const Dashboard = () => {
-  const { initSocket, handleSendMessage, handleGetChats, handleGetMessages } = useChat()
+  const { initSocket, handleSendMessage, handleGetChats, handleGetMessages, handleDeleteChat } = useChat()
   const [draft, setDraft] = useState('')
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const dispatch = useDispatch()
@@ -56,6 +56,7 @@ const Dashboard = () => {
           onSelectChat={(chatId) => dispatch(setCurrentChatId(chatId))}
           onStartNewChat={startNewChat}
           onToggleCollapse={() => setSidebarCollapsed((isCollapsed) => !isCollapsed)}
+          onDeleteChat={handleDeleteChat}
         />
         <ConversationPanel
           activeChat={activeChat}

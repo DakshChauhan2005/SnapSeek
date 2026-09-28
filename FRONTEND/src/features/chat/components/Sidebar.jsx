@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router'
 
-const Sidebar = ({ chats, currentChatId, collapsed, displayName, onSelectChat, onStartNewChat, onToggleCollapse }) => {
+const Sidebar = ({ chats, currentChatId, collapsed, displayName, onSelectChat, onStartNewChat, onToggleCollapse, onDeleteChat }) => {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
   const navigate = useNavigate()
   const orderedChats = Object.values(chats).sort(
     (firstChat, secondChat) => new Date(secondChat.createdAt || 0) - new Date(firstChat.createdAt || 0)
   )
-
   return (
     <aside className={`flex w-full flex-col border-b border-[#deded6] bg-[#e9ebe5] transition-[width] duration-300 lg:h-full lg:shrink-0 lg:border-b-0 lg:border-r ${collapsed ? 'lg:w-[76px]' : 'lg:w-[310px]'}`}>
       <div className={`flex items-center px-5 pb-5 pt-6 ${collapsed ? 'justify-center lg:px-3' : 'justify-between'}`}>
@@ -37,10 +36,23 @@ const Sidebar = ({ chats, currentChatId, collapsed, displayName, onSelectChat, o
             <p className="px-2 pb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#858b81]">Recent</p>
             <div className="space-y-1">
               {orderedChats.map((chatItem) => (
-                <button key={chatItem._id} onClick={() => onSelectChat(chatItem._id)} className={`w-full rounded-xl px-3 py-3 text-left transition ${currentChatId === chatItem._id ? 'bg-[#f7f7f2] shadow-[0_2px_8px_rgba(32,33,31,0.05)]' : 'hover:bg-[#dfe2db]'}`}>
-                  <p className="truncate text-sm font-medium">{chatItem.title}</p>
-                  <p className="mt-1 truncate text-xs text-[#7d837a]">{chatItem.messages?.at(-1)?.content || 'Start something new...'}</p>
-                </button>
+                <div key={chatItem._id} className={`group flex w-full items-center rounded-xl transition ${currentChatId === chatItem._id ? 'bg-[#f7f7f2] shadow-[0_2px_8px_rgba(32,33,31,0.05)]' : 'hover:bg-[#dfe2db]'}`}>
+                  <button type="button" onClick={() => onSelectChat(chatItem._id)} className="min-w-0 flex-1 px-3 py-3 text-left">
+                    <p className="truncate text-sm font-medium">{chatItem.title}</p>
+                    <p className="mt-1 truncate text-xs text-[#7d837a]">{chatItem.messages?.at(-1)?.content || 'Start something new...'}</p>
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={`Delete ${chatItem.title}`}
+                    title="Delete chat"
+                    onClick={(event) => { event.stopPropagation(); onDeleteChat(chatItem._id) }}
+                    className="mr-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[#899087] opacity-0 transition hover:bg-[#d4dcd0] hover:text-[#385039] group-hover:opacity-100 group-focus-within:opacity-100"
+                  >
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-4 w-4">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M10 11v6m4-6v6M6 7l1 13h10l1-13M9 7V4h6v3" />
+                    </svg>
+                  </button>
+                </div>
               ))}
             </div>
           </>

@@ -1,9 +1,16 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
-const ConversationPanel = ({ activeChat, displayName, draft, onDraftChange, onSendMessage, isLoading }) => (
-  <section className="flex min-h-[calc(100vh-180px)] flex-1 flex-col bg-[#f8f8f4] lg:min-h-0">
+const ConversationPanel = ({ activeChat, displayName, draft, onDraftChange, onSendMessage, isLoading }) => {
+  const messagesEndRef = useRef(null)
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+  }, [activeChat.messages])
+
+  return (
+    <section className="flex min-h-[calc(100vh-180px)] flex-1 flex-col bg-[#f8f8f4] lg:min-h-0">
     <header className="flex items-center justify-between border-b border-[#e4e4dc] px-5 py-4 sm:px-8">
       <div>
         <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#899087]">Conversation</p>
@@ -29,6 +36,7 @@ const ConversationPanel = ({ activeChat, displayName, draft, onDraftChange, onSe
               </div>
             </div>
           ))}
+          <div ref={messagesEndRef} aria-hidden="true" />
         </div>
       )}
     </div>
@@ -41,7 +49,8 @@ const ConversationPanel = ({ activeChat, displayName, draft, onDraftChange, onSe
       </form>
       <p className="mt-3 text-center text-[10px] text-[#a0a49d]">SnapSeek can make mistakes. Check important information.</p>
     </div>
-  </section>
-)
+    </section>
+  )
+}
 
 export default ConversationPanel

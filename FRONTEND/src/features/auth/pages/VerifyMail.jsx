@@ -5,7 +5,7 @@ import { useSearchParams } from "react-router";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { verifyEmail } from "../services/auth.api";
-import { setUser } from "../auth.slice";
+import { setUser, setLoading } from "../auth.slice";
 
 const VerifyMail = () => {
   const [searchParams] = useSearchParams();
@@ -26,6 +26,7 @@ const VerifyMail = () => {
     verifyEmail(token)
       .then((response) => {
         dispatch(setUser(response.user));
+        dispatch(setLoading(false));
         setStatus("success");
         setMessage(response.message || "Your email has been verified successfully.");
         navigate("/", { replace: true });

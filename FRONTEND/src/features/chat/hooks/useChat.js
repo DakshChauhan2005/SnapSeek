@@ -1,6 +1,7 @@
 import { initSocket } from "../chat.socket";
 import { useCallback, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { sendMessage, getChats, getMesseges, deleteChat } from "../services/chat.api";
 import {
     upsertChat,
@@ -15,11 +16,13 @@ import {
 } from "../chat.slice";
 import { getSocket, joinChatRoom } from "../chat.socket";
 export const useChat = () => {
+    const {currentChatId} = useSelector((state) => state.chat);
     const dispatch = useDispatch();
     
     useEffect(() => {
         const socket = getSocket();
         if(!socket) return;
+        dispatch
 
         const onStreamEvent = (event) => {
             const {chatId, type} = event;
@@ -32,9 +35,11 @@ export const useChat = () => {
                 dispatch(finalizeStreamingMessage({ chatId }));
                 dispatch(setLoading(false));
                 dispatch(setError(event.message || 'Failed to generate a response'));
+                toast.error(event.message || 'Failed to generate a response');
+            } else if (type === "tool_call") {
+                toast.info(`Tool call event received  ${event.name}`);
             }
-            // type === "tool_call" → hook up a "searching..." indicator later
-        }
+        };
         socket.on("stream_event", onStreamEvent);
         return () => socket.off("stream_event", onStreamEvent);
     }, []);
@@ -61,6 +66,8 @@ export const useChat = () => {
             }));
         } catch (error) {
             dispatch(setError(error.response?.data?.message || 'Failed to send message'));
+            toast.error(error.response?.data?.message || 'Failed to send message');
+        } finally {
             dispatch(setLoading(false));
         }
     }, [dispatch]);
@@ -92,10 +99,27 @@ export const useChat = () => {
             dispatch(setLoading(false));
         }
     }, [dispatch]);
+    const handleDeleteChat = useCallback(async (chatId) => {
+        dispatch(setError(null));
+        dispatch(setLoading(true));
+        try {
+            await deleteChat(chatId);
+            await handleGetChats();
+            if(chatId === currentChatId){
+                dispatch(setCurrentChatId(null));
+            }
+            toast.success('Chat deleted successfully');
+        } catch (error) {
+            dispatch(setError(error.response?.data?.message || 'Failed to delete chat'));
+        } finally {
+            dispatch(setLoading(false));
+        }
+    }, [currentChatId, dispatch, handleGetChats]);
     return {
         initSocket,
         handleSendMessage,
         handleGetChats,
         handleGetMessages,
+        handleDeleteChat,
     };
 }
