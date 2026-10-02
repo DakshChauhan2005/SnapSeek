@@ -1,13 +1,29 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
 const ConversationPanel = ({ activeChat, displayName, draft, onDraftChange, onSendMessage, isLoading }) => {
   const messagesEndRef = useRef(null)
+  const scrollContainerRef = useRef(null)
+  const [showScrollButton, setShowScrollButton] = useState(false)
+  const latestAcknowledgedMessage = [...activeChat.messages].reverse().find((message) => message._id || message.id)
+  const latestAcknowledgedMessageId = latestAcknowledgedMessage?._id || latestAcknowledgedMessage?.id || null
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [activeChat.messages])
+  }, [latestAcknowledgedMessageId])
+
+  const handleScroll = (event) => {
+    const { scrollTop, scrollHeight, clientHeight } = event.currentTarget
+    setShowScrollButton(scrollHeight - (scrollTop + clientHeight) > 24)
+  }
+
+  const scrollToLatest = () => {
+    scrollContainerRef.current?.scrollTo({
+      top: scrollContainerRef.current.scrollHeight,
+      behavior: 'smooth',
+    })
+  }
 
   return (
     <section className="flex min-h-[calc(100vh-180px)] flex-1 flex-col bg-[#f8f8f4] lg:min-h-0">
@@ -19,7 +35,7 @@ const ConversationPanel = ({ activeChat, displayName, draft, onDraftChange, onSe
       <button aria-label="More conversation options" className="flex h-9 w-9 items-center justify-center rounded-full text-lg text-[#727970] transition hover:bg-[#ecece6]">•••</button>
     </header>
 
-    <div className="flex flex-1 flex-col overflow-y-auto px-5 py-8 sm:px-10 lg:px-[clamp(2rem,9vw,9rem)]">
+    <div ref={scrollContainerRef} onScroll={handleScroll} className="relative flex flex-1 flex-col overflow-y-auto px-5 py-8 sm:px-10 lg:px-[clamp(2rem,9vw,9rem)]">
       {activeChat.messages.length === 0 ? (
         <div className="m-auto max-w-lg text-center">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#dce8d8] text-2xl text-[#436448]">✦</div>
@@ -38,6 +54,17 @@ const ConversationPanel = ({ activeChat, displayName, draft, onDraftChange, onSe
           ))}
           <div ref={messagesEndRef} aria-hidden="true" />
         </div>
+      )}
+      {showScrollButton && (
+        <button
+          type="button"
+          onClick={scrollToLatest}
+          aria-label="Scroll to latest message"
+          title="Scroll to latest message"
+          className="sticky bottom-2 ml-auto flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#d8dbd4] bg-white text-lg text-[#4a5e49] shadow-[0_4px_14px_rgba(32,33,31,0.12)] transition hover:bg-[#edf2eb]"
+        >
+          ↓
+        </button>
       )}
     </div>
 

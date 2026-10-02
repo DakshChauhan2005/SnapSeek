@@ -51,7 +51,11 @@ export const useChat = () => {
         dispatch(setError(null));
         try {
             const response = await sendMessage(chatId, message); // now just an ack
-            const { chat } = response;
+            const { chat, messages = [] } = response;
+            const acknowledgedUserMessage = [...messages].reverse().find(({ role }) => role === "user") || {
+                content: message,
+                role: "user",
+            };
 
             dispatch(upsertChat(chat));
             dispatch(setCurrentChatId(chat._id));
@@ -60,7 +64,7 @@ export const useChat = () => {
             dispatch(appendChatMessages({
                 chatId: chat._id,
                 messages: [
-                    { content: message, role: "user" },
+                    acknowledgedUserMessage,
                     { content: "", role: "assistant", streaming: true }, // placeholder
                 ],
             }));
