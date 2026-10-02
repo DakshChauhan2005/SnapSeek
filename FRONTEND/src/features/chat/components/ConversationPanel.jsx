@@ -6,7 +6,7 @@ const ConversationPanel = ({ activeChat, displayName, draft, onDraftChange, onSe
   const messagesEndRef = useRef(null)
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [activeChat.messages])
 
   return (

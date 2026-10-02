@@ -14,13 +14,19 @@ const MistralModel = new ChatMistralAI({
   apiKey: process.env.MISTRAL_API_KEY,
   maxRetries: 0,
 });
+// const GroqModel = new ChatGroq({
+//   model: "openai/gpt-oss-20b",
+//   apiKey: process.env.GROQ_API_KEY,
+//   maxRetries: 3,
+//   streaming: true,
+// });
+
 const GroqModel = new ChatGroq({
-  model: "openai/gpt-oss-20b",
-  apiKey: process.env.GROQ_API_KEY, // from console.groq.com/keys
-  maxRetries: 3, // Groq occasionally streams malformed tool-call JSON; retry before giving up
+  model: "qwen/qwen3.8-27b",
+  apiKey: process.env.GROQ_API_KEY,
+  maxRetries: 3,
   streaming: true,
 });
-
 const WebSearchTool = tool(
     async ({ query }) => WebSearch(query),
     {
