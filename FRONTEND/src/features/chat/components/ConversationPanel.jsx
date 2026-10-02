@@ -5,20 +5,36 @@ import remarkGfm from 'remark-gfm'
 const ConversationPanel = ({ activeChat, displayName, draft, onDraftChange, onSendMessage, isLoading }) => {
   const messagesEndRef = useRef(null)
   const scrollContainerRef = useRef(null)
+  const shouldFollowStreamRef = useRef(true)
+  const previousAcknowledgedMessageIdRef = useRef(null)
   const [showScrollButton, setShowScrollButton] = useState(false)
   const latestAcknowledgedMessage = [...activeChat.messages].reverse().find((message) => message._id || message.id)
   const latestAcknowledgedMessageId = latestAcknowledgedMessage?._id || latestAcknowledgedMessage?.id || null
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [latestAcknowledgedMessageId])
+    const acknowledgedMessageChanged = latestAcknowledgedMessageId !== previousAcknowledgedMessageIdRef.current
+    previousAcknowledgedMessageIdRef.current = latestAcknowledgedMessageId
+
+    if (acknowledgedMessageChanged) {
+      shouldFollowStreamRef.current = true
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    } else if (shouldFollowStreamRef.current) {
+      scrollContainerRef.current?.scrollTo({
+        top: scrollContainerRef.current.scrollHeight,
+        behavior: 'auto',
+      })
+    }
+  }, [activeChat.messages, latestAcknowledgedMessageId])
 
   const handleScroll = (event) => {
     const { scrollTop, scrollHeight, clientHeight } = event.currentTarget
-    setShowScrollButton(scrollHeight - (scrollTop + clientHeight) > 24)
+    const isAtBottom = scrollHeight - (scrollTop + clientHeight) <= 24
+    shouldFollowStreamRef.current = isAtBottom
+    setShowScrollButton(!isAtBottom)
   }
 
   const scrollToLatest = () => {
+    shouldFollowStreamRef.current = true
     scrollContainerRef.current?.scrollTo({
       top: scrollContainerRef.current.scrollHeight,
       behavior: 'smooth',
