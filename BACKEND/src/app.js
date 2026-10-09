@@ -5,6 +5,7 @@ import authRoutes from '../routes/auth.routes.js'
 import cors from 'cors';
 import morgan from 'morgan';
 import chatRouter from '../routes/chat.routes.js';
+import passport from '../config/passport.js';
 
 
 const app = express();
@@ -14,6 +15,7 @@ app.use(cors({
 }));
 app.use(cookieParser());
 app.use(express.json());
+app.use(passport.initialize());
 connectDB();
 app.use(morgan('dev'));
 

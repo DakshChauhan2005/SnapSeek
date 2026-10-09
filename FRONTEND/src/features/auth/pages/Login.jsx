@@ -1,16 +1,35 @@
-import React, { useState } from "react";
-import { Navigate, useNavigate } from "react-router";
+import React, { useEffect, useState } from "react";
+import { Navigate, useNavigate, useSearchParams } from "react-router";
 import { useAuth } from "../hook/useAuth";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import GoogleButton from "../components/GoogleButton";
 
+// Error codes the backend puts in /login?error=... after a failed Google sign-in
+const GOOGLE_ERRORS = {
+    google_denied: "Google sign-in was cancelled.",
+    google_failed: "Google sign-in failed. Please try again.",
+    google_unavailable: "Google sign-in is not available right now.",
+    google_no_email: "Google did not share an email address with us.",
+    google_email_unverified: "Your Google email address is not verified.",
+};
 
 const Login = () => {
     const { user, loading } = useSelector((state) => state.auth);
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
     const [form, setForm] = useState({ email: "", password: "" });
-    
+
     const { handleLogin } = useAuth();
-    
+
+    useEffect(() => {
+        const code = searchParams.get("error");
+        if (!code) return;
+        toast.error(GOOGLE_ERRORS[code] || "Sign-in failed. Please try again.", { toastId: code });
+        // drop the param so a refresh doesn't show the error again
+        setSearchParams({}, { replace: true });
+    }, [searchParams, setSearchParams]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
@@ -28,7 +47,7 @@ const Login = () => {
 
     if (!loading && user) {
         return <Navigate to="/" />
-    } 
+    }
     return (
         <div className="flex min-h-screen items-center justify-center bg-[#f5f4ef] px-4 py-10 text-[#20211f] sm:py-14">
             <div className="mx-auto w-full max-w-md space-y-8">
@@ -95,6 +114,14 @@ const Login = () => {
                     >
                         Sign in
                     </button>
+
+                    <div className="flex items-center gap-3 text-xs uppercase tracking-[0.18em] text-[#a0a49d]">
+                        <span className="h-px flex-1 bg-[#deded6]" />
+                        or
+                        <span className="h-px flex-1 bg-[#deded6]" />
+                    </div>
+
+                    <GoogleButton label="Continue with Google" />
                 </form>
 
                 <p className="text-center text-sm text-[#7d837a]">

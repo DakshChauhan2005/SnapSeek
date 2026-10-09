@@ -1,8 +1,9 @@
 import {Router} from "express";
-import { loginValidator, registerValidation } from "../validator/auth.validator.js";
-import { getMe, login, register, verifyEmail, logout } from "../controller/auth.controller.js";
+import { loginValidator, registerValidation, resendVerificationValidator } from "../validator/auth.validator.js";
+import { getMe, login, register, verifyEmail, resendVerification, logout } from "../controller/auth.controller.js";
 import { authUser } from "../middleware/auth.middleware.js";
 import authLimiter from "../middleware/authLimiter.middleware.js";
+import { startGoogleAuth, googleCallback } from "../controller/googleAuth.controller.js";
 const router = Router();
 
 
@@ -38,6 +39,14 @@ router.get("/get-me", authUser , getMe)
  */
 router.post("/verify-email", verifyEmail)
 
+/**
+ * @route POST /api/auth/resend-verification
+ * @desc Send a fresh verification link (old link stops working)
+ * @access Public
+ * @body { email: String }
+ */
+router.post("/resend-verification", authLimiter, resendVerificationValidator, resendVerification)
+
 /** 
  * @route POST /api/auth/logout
  * @desc Logout user and clear JWT token
@@ -46,6 +55,21 @@ router.post("/verify-email", verifyEmail)
  */
 
 router.post("/logout", authUser, logout)
+
+/**
+ * @route GET /api/auth/google
+ * @desc Start Google OAuth (redirects to Google's consent screen)
+ * @access Public
+ * @query { deviceId: String }
+ */
+router.get("/google", authLimiter, startGoogleAuth)
+
+/**
+ * @route GET /api/auth/google/callback
+ * @desc Google redirects back here; creates the session cookie and redirects to the frontend
+ * @access Public (called by Google)
+ */
+router.get("/google/callback", googleCallback)
 
 
 export default router;

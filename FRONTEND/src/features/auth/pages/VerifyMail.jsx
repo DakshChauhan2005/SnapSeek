@@ -1,18 +1,16 @@
-
-import { Link } from "react-router";
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
-import { verifyEmail } from "../services/auth.api";
-import { setUser, setLoading } from "../auth.slice";
+import { Link, useLocation, useSearchParams } from "react-router";
+import { useEffect, useRef, useState } from "react";
+import { verifyEmail, resendVerification } from "../services/auth.api";
 
 const VerifyMail = () => {
   const [searchParams] = useSearchParams();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const location = useLocation();
   const [status, setStatus] = useState("waiting");
   const [message, setMessage] = useState("");
+  const [email, setEmail] = useState(location.state?.email || "");
+  const [resendMsg, setResendMsg] = useState("");
+  const [resending, setResending] = useState(false);
+  const hasVerified = useRef(false); 
 
   useEffect(() => {
     const token = searchParams.get("token");
@@ -22,21 +20,35 @@ const VerifyMail = () => {
       return;
     }
 
+    if (hasVerified.current) return;
+    hasVerified.current = true;
+
     setStatus("verifying");
     verifyEmail(token)
       .then((response) => {
-        dispatch(setUser(response.user));
-        dispatch(setLoading(false));
         setStatus("success");
         setMessage(response.message || "Your email has been verified successfully.");
-        navigate("/", { replace: true });
       })
       .catch((error) => {
         setStatus("error");
         setMessage(error.response?.data?.message || "This verification link is invalid or has expired.");
       });
-  }, [dispatch, navigate, searchParams]);
+  }, [searchParams]);
 
+  const handleResend = async (e) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setResending(true);
+    setResendMsg("");
+    try {
+      const res = await resendVerification(email.trim());
+      setResendMsg(res.message);
+    } catch (error) {
+      setResendMsg(error.response?.data?.message || "Could not resend the link. Please try again.");
+    } finally {
+      setResending(false);
+    }
+  };
   const isVerifying = status === "verifying";
   const isSuccess = status === "success";
   const isWaiting = status === "waiting";
@@ -87,6 +99,30 @@ const VerifyMail = () => {
                   <span className={`mt-0.5 ${isSuccess ? "text-[#436448]" : "text-[#a34e3b]"}`} aria-hidden="true">{isSuccess ? "✓" : "!"}</span>
                   <p className="text-sm leading-5 text-[#596057]">{isSuccess ? "Your account is unlocked. Sign in to start using SnapSeek." : "Request a new registration if you no longer have a valid verification link."}</p>
                 </div>
+              )}
+              {!isVerifying && !isSuccess && (
+                <form onSubmit={handleResend} className="mt-8 space-y-3">
+                  <label className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#747a70]" htmlFor="resend-email">Didn't get it? Resend the link</label>
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    <input
+                      id="resend-email"
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@example.com"
+                      className="w-full rounded-xl border border-[#deded6] bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#a9bca5]"
+                    />
+                    <button
+                      type="submit"
+                      disabled={resending}
+                      className="rounded-xl border border-[#20211f] px-5 py-3 text-sm font-semibold transition hover:bg-[#20211f] hover:text-[#f8f8f4] disabled:opacity-60"
+                    >
+                      {resending ? "Sending..." : "Resend"}
+                    </button>
+                  </div>
+                  {resendMsg && <p className="text-xs leading-5 text-[#596057]">{resendMsg}</p>}
+                </form>
               )}
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">

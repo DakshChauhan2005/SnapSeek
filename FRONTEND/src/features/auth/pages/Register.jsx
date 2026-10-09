@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../hook/useAuth";
 import { useNavigate } from "react-router";
+import GoogleButton from "../components/GoogleButton";
 
 const Register = () => {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
@@ -17,7 +18,7 @@ const Register = () => {
     const payload = { ...form, accept };
     const isRegistered = await handleRegister(payload);
     if (isRegistered) {
-      navigate("/verify-email");
+      navigate("/verify-email", { state: { email: payload.email } });
     }
   };
 
@@ -102,6 +103,14 @@ const Register = () => {
           >
             Create account
           </button>
+
+          <div className="flex items-center gap-3 text-xs uppercase tracking-[0.18em] text-[#a0a49d]">
+            <span className="h-px flex-1 bg-[#deded6]" />
+            or
+            <span className="h-px flex-1 bg-[#deded6]" />
+          </div>
+
+          <GoogleButton label="Sign up with Google" />
         </form>
 
         <p className="text-center text-sm text-[#7d837a]">

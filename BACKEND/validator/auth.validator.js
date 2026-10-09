@@ -38,3 +38,11 @@ export const loginValidator = [
         .notEmpty().withMessage("Password is required"),
     validateRequest
 ]
+
+export const resendVerificationValidator = [
+    body("email")
+        .trim()
+        .notEmpty().withMessage("Email is required")
+        .isEmail().withMessage("Invalid email address"),
+    validateRequest
+]

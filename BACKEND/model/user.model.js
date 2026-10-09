@@ -14,15 +14,35 @@ const userSchema = new mongoose.Schema({
         lowercase: true,
         trim: true
     },
+    // Optional for accounts created through Google sign-in (they have no password)
     password: {
         type: String, 
-        required: true,
+        required: function () { return !this.googleId; },
         minlength: 6
+    },
+    // Google account "sub" id. sparse+unique: many users may have none, but no two may share one
+    googleId: {
+        type: String,
+        unique: true,
+        sparse: true
+    },
+    avatar: {
+        type: String,
+        trim: true
     },
     verified: {
         type: Boolean, 
         default: false
-    },updatedAt: {
+    },
+    emailVerificationToken: {
+        type: String,
+        select: false
+    },
+    emailVerificationExpires: {
+        type: Date,
+        select: false
+    },
+    updatedAt: {
         type: Date, 
         default: Date.now
     },
@@ -35,11 +55,13 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre('save' ,  async function () {
-    if (!this.isModified('password')) return;
+    if (!this.password || !this.isModified('password')) return;
     this.password = await bcrypt.hash(this.password , 10) 
 } )
 
 userSchema.methods.comparePassword = function (candidatePassword) {
+    // Google-only accounts have no password hash to compare against
+    if (!this.password) return Promise.resolve(false);
     return bcrypt.compare(candidatePassword , this.password)
 }
 
