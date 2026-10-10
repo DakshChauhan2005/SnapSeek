@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { register, login, getMe, logout } from "../services/auth.api";
-import { setUser, setError, setLoading } from "../auth.slice";
-import { toast } from "react-toastify";
+import { setUser, setLoading, setAuthChecked } from "../auth.slice";
+import { notifyError } from "../../../utils/notify";
 import { disconnectSocket } from "../../chat/chat.socket";
 
 
@@ -18,9 +18,7 @@ export function useAuth() {
             await register({ username, email, password });
             return true;
         } catch (err) {
-            const message = err.response?.data?.message || "Registration failed";
-            dispatch(setError(message));
-            toast.error(message);
+            notifyError(err, "Registration failed");
             return false;
         } finally {
             dispatch(setLoading(false));
@@ -34,9 +32,7 @@ export function useAuth() {
             dispatch(setUser(data.user));
             return true;
         } catch (err) {
-            const message = err.response?.data?.message || "Login failed";
-            dispatch(setError(message));
-            toast.error(message);
+            notifyError(err, "Login failed");
             return false;
         } finally {
             dispatch(setLoading(false));
@@ -48,10 +44,11 @@ export function useAuth() {
             dispatch(setLoading(true));
             const data = await getMe();
             dispatch(setUser(data.user));
-        } catch (err) {
-            dispatch(setError(err.response?.data?.message || "Failed to fetch user"));
-        } finally {
+         } catch {
++            dispatch(setUser(null));
+         } finally {
             dispatch(setLoading(false));
+            dispatch(setAuthChecked(true));
         }
     }
 
@@ -61,7 +58,7 @@ export function useAuth() {
             await logout();
             dispatch(setUser(null));
         } catch (err) {
-            dispatch(setError(err.response?.data?.message || "Logout failed"));
+            notifyError(err, "Logout failed");
         } finally {
             disconnectSocket();
             dispatch(setLoading(false));

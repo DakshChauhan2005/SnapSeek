@@ -115,9 +115,9 @@ const Register = () => {
 
         <p className="text-center text-sm text-[#7d837a]">
           Already have an account? {" "}
-          <a href="/login" className="font-medium text-[#436448] hover:text-[#385039]">
+          <Link to="/login" className="font-medium text-[#436448] hover:text-[#385039]">
             Sign in
-          </a>
+          </Link>
         </p>
       </div>
     </div>

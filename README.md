@@ -2,6 +2,8 @@
 
 SnapSeek is an AI chat workspace for creating persistent conversations and receiving streamed assistant responses. It combines a React/Vite client with an Express/MongoDB API, LangChain model orchestration, Tavily web search, email verification, device-aware sessions, and Socket.IO streaming.
 
+[![Architecture diagram of dakshchauhan2005/snapseek](https://gitdiagram.com/dakshchauhan2005/snapseek/diagram.png)](https://gitdiagram.com/dakshchauhan2005/snapseek?utm_source=readme&utm_medium=picture)
+
 ## What is in this repository?
 
 SnapSeek is a small monorepo with two independently runnable applications:

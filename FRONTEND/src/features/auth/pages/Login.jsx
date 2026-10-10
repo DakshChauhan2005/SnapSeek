@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Navigate, useNavigate, useSearchParams } from "react-router";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router";
 import { useAuth } from "../hook/useAuth";
-import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import { notifyError } from "../../../utils/notify";
 import GoogleButton from "../components/GoogleButton";
 
 // Error codes the backend puts in /login?error=... after a failed Google sign-in
@@ -15,8 +14,8 @@ const GOOGLE_ERRORS = {
 };
 
 const Login = () => {
-    const { user, loading } = useSelector((state) => state.auth);
     const navigate = useNavigate();
+    const location = useLocation();
     const [searchParams, setSearchParams] = useSearchParams();
     const [form, setForm] = useState({ email: "", password: "" });
 
@@ -25,7 +24,7 @@ const Login = () => {
     useEffect(() => {
         const code = searchParams.get("error");
         if (!code) return;
-        toast.error(GOOGLE_ERRORS[code] || "Sign-in failed. Please try again.", { toastId: code });
+        notifyError(GOOGLE_ERRORS[code] || "Sign-in failed. Please try again.");
         // drop the param so a refresh doesn't show the error again
         setSearchParams({}, { replace: true });
     }, [searchParams, setSearchParams]);
@@ -40,14 +39,11 @@ const Login = () => {
         const payload = { email: form.email, password: form.password };
         const isLoggedIn = await handleLogin(payload);
         if (isLoggedIn) {
-            navigate("/dashboard", { replace: true });
+            navigate(location.state?.from || "/dashboard", { replace: true });
         }
     };
 
 
-    if (!loading && user) {
-        return <Navigate to="/dashboard" replace />
-    }
     return (
         <div className="flex min-h-screen items-center justify-center bg-[#f5f4ef] px-4 py-10 text-[#20211f] sm:py-14">
             <div className="mx-auto w-full max-w-md space-y-8">
@@ -126,9 +122,9 @@ const Login = () => {
 
                 <p className="text-center text-sm text-[#7d837a]">
                     Don&apos;t have an account? {" "}
-                    <a href="/register" className="font-medium text-[#436448] hover:text-[#385039]">
+                    <Link to="/register" className="font-medium text-[#436448] hover:text-[#385039]">
                         Create one
-                    </a>
+                    </Link>
                 </p>
             </div>
         </div>

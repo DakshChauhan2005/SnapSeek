@@ -4,18 +4,18 @@ import Register from "../features/auth/pages/Register";
 import VerifyMail from "../features/auth/pages/VerifyMail";
 import Dashboard from "../features/chat/pages/Dashboard";
 import Protected from "../features/auth/components/Protected";
-import { Navigate } from "react-router";
+import GuestOnly from "../features/auth/components/GuestOnly";
 import Logout from "../features/auth/pages/Logout";
 import BrandPage from "../features/auth/pages/BrandPage";
 import LegalPage from "../features/legal/pages/LegalPage";
 export const router = createBrowserRouter([
     {
         path: "/login",
-        element: <Login />
+        element: <GuestOnly><Login /></GuestOnly>
     },
     {
         path: "/register",
-        element: <Register />
+        element: <GuestOnly><Register /></GuestOnly>
     },
     {
         path: "/verify-email",
