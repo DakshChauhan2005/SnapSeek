@@ -40,13 +40,13 @@ const Login = () => {
         const payload = { email: form.email, password: form.password };
         const isLoggedIn = await handleLogin(payload);
         if (isLoggedIn) {
-            navigate("/");
+            navigate("/dashboard", { replace: true });
         }
     };
 
 
     if (!loading && user) {
-        return <Navigate to="/" />
+        return <Navigate to="/dashboard" replace />
     }
     return (
         <div className="flex min-h-screen items-center justify-center bg-[#f5f4ef] px-4 py-10 text-[#20211f] sm:py-14">

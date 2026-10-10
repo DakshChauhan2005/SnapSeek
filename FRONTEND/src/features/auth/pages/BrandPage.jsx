@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router";
+import { Link, Navigate } from "react-router";
 import { useSelector } from "react-redux";
 
 const BRAND_VISITED_KEY = "snapseek-brand-page-seen";
 
-const BrandPage = () => {
+const BrandPage = ({ allowAuthenticated = false }) => {
     const { user, loading } = useSelector((state) => state.auth);
-    const navigate = useNavigate();
     const [isFirstVisit] = useState(() => window.localStorage.getItem(BRAND_VISITED_KEY) !== "true");
 
     useEffect(() => {
@@ -19,7 +18,7 @@ const BrandPage = () => {
         return <div className="flex min-h-screen items-center justify-center bg-[#f5f4ef] text-sm text-[#747a70]">Loading SnapSeek...</div>;
     }
 
-    if (user) {
+    if (user && !allowAuthenticated) {
         return <Navigate to="/dashboard" replace />;
     }
 
@@ -31,12 +30,12 @@ const BrandPage = () => {
         <main className="min-h-screen overflow-hidden bg-[#f5f4ef] text-[#20211f]">
             <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-6 py-6 sm:px-10 lg:px-14">
                 <header className="flex items-center justify-between">
-                    <Link to="/" className="flex items-center gap-3" aria-label="SnapSeek home">
+                    <Link to={user ? "/home" : "/"} className="flex items-center gap-3" aria-label="SnapSeek home">
                         <span className="flex h-10 w-10 items-center justify-center rounded-[14px] bg-[#20211f] text-lg font-semibold text-[#f5f4ef]">S</span>
                         <span className="text-lg font-semibold tracking-[-0.04em]">SnapSeek</span>
                     </Link>
-                    <Link to="/login" className="text-sm font-semibold text-[#436448] transition hover:text-[#20211f]">
-                        Sign in
+                    <Link to={user ? "/dashboard" : "/login"} className="text-sm font-semibold text-[#436448] transition hover:text-[#20211f]">
+                        {user ? "Dashboard" : "Sign in"}
                     </Link>
                 </header>
 
@@ -51,18 +50,17 @@ const BrandPage = () => {
                         </p>
                         <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
                             <Link
-                                to="/register"
+                                to={user ? "/dashboard" : "/register"}
                                 className="inline-flex items-center justify-center rounded-xl bg-[#20211f] px-6 py-3.5 text-sm font-semibold text-[#f8f8f4] shadow-[0_8px_18px_rgba(32,33,31,0.15)] transition hover:bg-[#3b3d38]"
                             >
-                                Start exploring <span className="ml-3 text-base">-&gt;</span>
+                                {user ? "Open dashboard" : "Start exploring"} <span className="ml-3 text-base">-&gt;</span>
                             </Link>
-                            <button
-                                type="button"
-                                onClick={() => navigate("/login")}
+                            <Link
+                                to={user ? "/" : "/login"}
                                 className="inline-flex items-center justify-center rounded-xl px-5 py-3.5 text-sm font-semibold text-[#436448] transition hover:bg-[#e8ebe2]"
                             >
-                                I already have an account
-                            </button>
+                                {user ? "Back to app" : "I already have an account"}
+                            </Link>
                         </div>
                         <div className="mt-14 flex flex-wrap gap-x-8 gap-y-3 text-xs font-medium uppercase tracking-[0.12em] text-[#8a9087]">
                             <span>Private by design</span>
@@ -98,6 +96,10 @@ const BrandPage = () => {
                         </div>
                     </div>
                 </section>
+                <footer className="flex gap-5 border-t border-[#deded6] py-5 text-xs text-[#747a70]">
+                    <Link to="/privacy" className="transition hover:text-[#20211f]">Privacy</Link>
+                    <Link to="/terms" className="transition hover:text-[#20211f]">Terms</Link>
+                </footer>
             </div>
         </main>
     );

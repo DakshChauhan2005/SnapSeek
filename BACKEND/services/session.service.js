@@ -19,6 +19,11 @@ export async function startSession(req, res, user, deviceId) {
         deviceId
     }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
-    res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "none" });
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // match the JWT's 7 day lifetime
+    });
     return token;
 }

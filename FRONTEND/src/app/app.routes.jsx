@@ -7,6 +7,7 @@ import Protected from "../features/auth/components/Protected";
 import { Navigate } from "react-router";
 import Logout from "../features/auth/pages/Logout";
 import BrandPage from "../features/auth/pages/BrandPage";
+import LegalPage from "../features/legal/pages/LegalPage";
 export const router = createBrowserRouter([
     {
         path: "/login",
@@ -23,6 +24,18 @@ export const router = createBrowserRouter([
     {
         path: "/",
         element: <BrandPage />
+    },
+    {
+        path: "/home",
+        element: <BrandPage allowAuthenticated />
+    },
+    {
+        path: "/privacy",
+        element: <LegalPage type="privacy" />
+    },
+    {
+        path: "/terms",
+        element: <LegalPage type="terms" />
     },
     {
         path: "/dashboard",

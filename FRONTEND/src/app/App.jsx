@@ -12,9 +12,6 @@ function App() {
     if (hasInitialized.current) return;
     hasInitialized.current = true;
 
-    const publicPaths = ["/login", "/register", "/verify-email"];
-    if (publicPaths.includes(window.location.pathname)) return;
-
     auth.handleGetMe();
     initSocket();
   }, [auth]);

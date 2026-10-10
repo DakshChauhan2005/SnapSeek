@@ -63,6 +63,10 @@ const Sidebar = ({ chats, currentChatId, collapsed, displayName, onSelectChat, o
         {profileMenuOpen && (
           <div className={`absolute bottom-full z-10 mb-2 rounded-2xl border border-[#d4d7cf] bg-[#f8f8f4] p-2 shadow-[0_10px_24px_rgba(32,33,31,0.12)] ${collapsed ? 'left-2 w-44' : 'left-4 right-4'}`}>
             <p className="px-3 pb-1 pt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#899087]">Account</p>
+            <button type="button" onClick={() => { setProfileMenuOpen(false); navigate('/home') }} className="group flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm font-medium text-[#41453f] transition hover:bg-[#e9ebe5] hover:text-[#20211f]">
+              Homepage
+              <span aria-hidden="true" className="text-[#899087] transition-transform group-hover:translate-x-0.5">→</span>
+            </button>
             <button type="button" onClick={() => { setProfileMenuOpen(false); navigate('/logout') }} className="group flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm font-medium text-[#41453f] transition hover:bg-[#e9ebe5] hover:text-[#20211f]">
               Logout
               <span aria-hidden="true" className="text-[#899087] transition-transform group-hover:translate-x-0.5">→</span>

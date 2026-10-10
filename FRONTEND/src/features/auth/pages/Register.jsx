@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../hook/useAuth";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import GoogleButton from "../components/GoogleButton";
 
 const Register = () => {
@@ -92,8 +92,8 @@ const Register = () => {
               required
             />
             <span>
-              I agree to the <a href="#" className="font-medium text-[#436448] hover:text-[#385039]">Terms</a> and
-              <a href="#" className="font-medium text-[#436448] hover:text-[#385039]"> Privacy Policy</a>.
+              I agree to the <Link to="/terms" className="font-medium text-[#436448] hover:text-[#385039]">Terms</Link> and
+              <Link to="/privacy" className="font-medium text-[#436448] hover:text-[#385039]"> Privacy Policy</Link>.
             </span>
           </div>
 
