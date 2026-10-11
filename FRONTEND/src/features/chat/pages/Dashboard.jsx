@@ -50,7 +50,6 @@ const Dashboard = () => {
     handleSendMessage({ message: text, chatId: currentChatId })
     setDraft('')
   }
-
   const displayName = user?.username || 'there'
 
   return (
@@ -62,6 +61,7 @@ const Dashboard = () => {
           collapsed={sidebarCollapsed}
           mobileOpen={mobileSidebarOpen}
           displayName={displayName}
+          userAvatar={user?.avatar}
           onSelectChat={(chatId) => {
             dispatch(setCurrentChatId(chatId))
             setMobileSidebarOpen(false)
@@ -82,6 +82,7 @@ const Dashboard = () => {
           onSendMessage={onSendMessage}
           isLoading={isLoading}
           onOpenMobileSidebar={() => setMobileSidebarOpen(true)}
+          userAvatar={user?.avatar}
         />
       </div>
     </main>

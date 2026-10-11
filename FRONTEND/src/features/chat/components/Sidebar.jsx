@@ -1,12 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 
-const Sidebar = ({ chats, currentChatId, collapsed, mobileOpen, displayName, onSelectChat, onStartNewChat, onToggleCollapse, onCloseMobile, onDeleteChat }) => {
+const Sidebar = ({ chats, currentChatId, collapsed, mobileOpen, displayName, onSelectChat, onStartNewChat, onToggleCollapse, onCloseMobile, onDeleteChat, userAvatar }) => {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
+  const [avatarLoadFailed, setAvatarLoadFailed] = useState(false)
   const navigate = useNavigate()
   const orderedChats = Object.values(chats).sort(
     (firstChat, secondChat) => new Date(secondChat.createdAt || 0) - new Date(firstChat.createdAt || 0)
   )
+
+  useEffect(() => {
+    setAvatarLoadFailed(false)
+  }, [userAvatar])
+
   return (
     <>
     <div onClick={onCloseMobile} aria-hidden="true" className={`fixed inset-0 z-30 bg-[#20211f]/40 backdrop-blur-[1px] transition-opacity duration-300 lg:hidden ${mobileOpen ? 'opacity-100' : 'pointer-events-none opacity-0'}`} />
@@ -81,7 +87,17 @@ const Sidebar = ({ chats, currentChatId, collapsed, mobileOpen, displayName, onS
           </div>
         )}
         <button type="button" onClick={() => setProfileMenuOpen((isOpen) => !isOpen)} aria-expanded={profileMenuOpen} aria-haspopup="menu" className={`group flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition hover:bg-[#dfe2db] ${profileMenuOpen ? 'bg-[#dfe2db]' : ''} ${collapsed ? 'lg:justify-center lg:px-0' : ''}`}>
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#c7d6c1] text-sm font-bold text-[#385039]">{displayName.charAt(0).toUpperCase()}</div>
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#c7d6c1] text-sm font-bold text-[#385039]">
+            {userAvatar && !avatarLoadFailed ? (
+              <img
+                src={userAvatar}
+                alt={`${displayName}'s avatar`}
+                referrerPolicy="no-referrer"
+                onError={() => setAvatarLoadFailed(true)}
+                className="h-full w-full rounded-full object-cover"
+              />
+            ) : displayName.charAt(0).toUpperCase()}
+          </div>
           <div className={`min-w-0 ${collapsed ? 'lg:hidden' : ''}`}>
             <p className="truncate text-sm font-semibold">{displayName}</p>
             <p className="text-xs text-[#7d837a]">Personal workspace</p>

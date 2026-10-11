@@ -53,7 +53,13 @@ export async function findOrCreateGoogleUser(profile) {
 
     // 1. returning Google user
     let user = await userModel.findOne({ googleId });
-    if (user) return user;
+    if (user) {
+        if (avatar && user.avatar !== avatar) {
+            user.avatar = avatar;
+            await user.save();
+        }
+        return user;
+    }
 
     // 2. existing account with the same email -> link
     user = await userModel
