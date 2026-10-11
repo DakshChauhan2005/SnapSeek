@@ -9,7 +9,7 @@ const Protected = ({ children }) => {
 
     if (!authChecked) {
         return (
-            <main className="flex min-h-screen items-center justify-center bg-[#f5f4ef] px-6 text-[#20211f]" role="status" aria-live="polite">
+            <main className="flex min-h-dvh items-center justify-center bg-[#f5f4ef] px-6 text-[#20211f]" role="status" aria-live="polite">
                 <div className="flex w-full max-w-xs flex-col items-center rounded-[28px] border border-[#deded6] bg-[#f8f8f4] px-8 py-9 text-center shadow-[0_20px_50px_rgba(32,33,31,0.08)]">
                     <div className="relative flex h-20 w-20 items-center justify-center">
                         <div className="absolute inset-0 rounded-full border-4 border-[#dfe8da]" />

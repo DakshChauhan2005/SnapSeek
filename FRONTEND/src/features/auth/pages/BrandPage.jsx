@@ -15,7 +15,7 @@ const BrandPage = ({ allowAuthenticated = false }) => {
     }, [isFirstVisit, loading, user]);
 
     if (loading) {
-        return <div className="flex min-h-screen items-center justify-center bg-[#f5f4ef] text-sm text-[#747a70]">Loading SnapSeek...</div>;
+        return <div className="flex min-h-dvh items-center justify-center bg-[#f5f4ef] text-sm text-[#747a70]">Loading SnapSeek...</div>;
     }
 
     if (user && !allowAuthenticated) {
@@ -27,8 +27,8 @@ const BrandPage = ({ allowAuthenticated = false }) => {
     }
 
     return (
-        <main className="min-h-screen overflow-hidden bg-[#f5f4ef] text-[#20211f]">
-            <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-6 py-6 sm:px-10 lg:px-14">
+        <main className="min-h-dvh overflow-x-hidden bg-[#f5f4ef] text-[#20211f]">
+            <div className="mx-auto flex min-h-dvh w-full max-w-7xl flex-col px-5 py-5 sm:px-10 sm:py-6 lg:px-14">
                 <header className="flex items-center justify-between">
                     <Link to={user ? "/home" : "/"} className="flex items-center gap-3" aria-label="SnapSeek home">
                         <span className="flex h-10 w-10 items-center justify-center rounded-[14px] bg-[#20211f] text-lg font-semibold text-[#f5f4ef]">S</span>
@@ -39,13 +39,13 @@ const BrandPage = ({ allowAuthenticated = false }) => {
                     </Link>
                 </header>
 
-                <section className="grid flex-1 items-center gap-14 py-14 lg:grid-cols-[minmax(0,0.9fr)_minmax(420px,0.75fr)] lg:gap-20 lg:py-8">
+                <section className="grid flex-1 items-center gap-12 py-10 sm:gap-14 sm:py-14 lg:grid-cols-[minmax(0,0.9fr)_minmax(420px,0.75fr)] lg:gap-20 lg:py-8">
                     <div className="max-w-2xl">
                         <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.24em] text-[#747a70]">A clearer way to think</p>
-                        <h1 className="max-w-xl text-5xl font-semibold leading-[0.98] tracking-[-0.065em] sm:text-7xl">
+                        <h1 className="max-w-xl text-4xl font-semibold leading-[1.02] tracking-[-0.06em] min-[400px]:text-5xl sm:text-6xl lg:text-7xl">
                             Your ideas, in focus.
                         </h1>
-                        <p className="mt-7 max-w-lg text-lg leading-8 text-[#687066]">
+                        <p className="mt-6 max-w-lg text-base leading-7 sm:mt-7 sm:text-lg sm:leading-8 text-[#687066]">
                             SnapSeek is a calm AI workspace for asking better questions, exploring the web, and keeping every useful conversation close at hand.
                         </p>
                         <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -62,15 +62,15 @@ const BrandPage = ({ allowAuthenticated = false }) => {
                                 {user ? "Back to app" : "I already have an account"}
                             </Link>
                         </div>
-                        <div className="mt-14 flex flex-wrap gap-x-8 gap-y-3 text-xs font-medium uppercase tracking-[0.12em] text-[#8a9087]">
+                        <div className="mt-10 flex flex-wrap sm:mt-14 gap-x-8 gap-y-3 text-xs font-medium uppercase tracking-[0.12em] text-[#8a9087]">
                             <span>Private by design</span>
                             <span>Search when it matters</span>
                         </div>
                     </div>
 
                     <div className="relative mx-auto w-full max-w-[500px] lg:mr-0">
-                        <div className="absolute -left-8 -top-8 h-32 w-32 rounded-full bg-[#d8e2d1] opacity-80" />
-                        <div className="absolute -bottom-8 -right-8 h-40 w-40 rounded-full bg-[#e5d9bf] opacity-70" />
+                        <div className="absolute -left-4 -top-6 h-24 w-24 sm:-left-8 sm:-top-8 sm:h-32 sm:w-32 rounded-full bg-[#d8e2d1] opacity-80" />
+                        <div className="absolute -bottom-6 -right-4 h-28 w-28 sm:-bottom-8 sm:-right-8 sm:h-40 sm:w-40 rounded-full bg-[#e5d9bf] opacity-70" />
                         <div className="relative rounded-[28px] border border-[#d8d9cf] bg-[#20211f] p-3 shadow-[0_24px_60px_rgba(32,33,31,0.18)]">
                             <div className="rounded-[20px] bg-[#f8f8f4] p-5 sm:p-7">
                                 <div className="flex items-center justify-between border-b border-[#deded6] pb-5">
@@ -96,7 +96,7 @@ const BrandPage = ({ allowAuthenticated = false }) => {
                         </div>
                     </div>
                 </section>
-                <footer className="flex gap-5 border-t border-[#deded6] py-5 text-xs text-[#747a70]">
+                <footer className="flex gap-5 border-t border-[#deded6] pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-5 text-xs text-[#747a70]">
                     <Link to="/privacy" className="transition hover:text-[#20211f]">Privacy</Link>
                     <Link to="/terms" className="transition hover:text-[#20211f]">Terms</Link>
                 </footer>

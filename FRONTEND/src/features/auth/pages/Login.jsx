@@ -45,8 +45,8 @@ const Login = () => {
 
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-[#f5f4ef] px-4 py-10 text-[#20211f] sm:py-14">
-            <div className="mx-auto w-full max-w-md space-y-8">
+        <div className="flex min-h-dvh items-center justify-center bg-[#f5f4ef] px-4 py-8 text-[#20211f] sm:py-14">
+            <div className="mx-auto w-full max-w-md space-y-6 sm:space-y-8">
                 <div className="text-center space-y-2">
                     <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#747a70]">Welcome back</p>
                     <h1 className="text-3xl font-semibold tracking-[-0.04em]">Sign in</h1>
@@ -55,7 +55,7 @@ const Login = () => {
 
                 <form
                     onSubmit={handleSubmit}
-                    className="space-y-5 rounded-2xl border border-[#deded6] bg-white p-6 shadow-[0_8px_25px_rgba(32,33,31,0.06)]"
+                    className="space-y-5 rounded-2xl border border-[#deded6] bg-white p-5 shadow-[0_8px_25px_rgba(32,33,31,0.06)] sm:p-6"
                 >
                     <div className="space-y-2">
                         <label className="block text-sm font-medium text-[#41453f]" htmlFor="email">
@@ -65,6 +65,7 @@ const Login = () => {
                             id="email"
                             name="email"
                             type="email"
+                            autoComplete="email"
                             value={form.email}
                             onChange={handleChange}
                             className="w-full rounded-xl border border-[#deded6] bg-[#f8f8f4] px-4 py-3 text-[#20211f] placeholder:text-[#a0a49d] outline-none transition focus:border-[#a9bca5] focus:ring-2 focus:ring-[#c7d6c1]"
@@ -81,6 +82,7 @@ const Login = () => {
                             id="password"
                             name="password"
                             type="password"
+                            autoComplete="current-password"
                             value={form.password}
                             onChange={handleChange}
                             className="w-full rounded-xl border border-[#deded6] bg-[#f8f8f4] px-4 py-3 text-[#20211f] placeholder:text-[#a0a49d] outline-none transition focus:border-[#a9bca5] focus:ring-2 focus:ring-[#c7d6c1]"

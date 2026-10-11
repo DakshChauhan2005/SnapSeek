@@ -54,15 +54,15 @@ const VerifyMail = () => {
   const isWaiting = status === "waiting";
 
   return (
-    <main className="min-h-screen bg-[#f5f4ef] text-[#20211f]">
-      <div className="flex min-h-screen w-full flex-col lg:flex-row">
-        <aside className="flex w-full flex-col border-b border-[#deded6] bg-[#e9ebe5] px-5 py-6 lg:w-[310px] lg:shrink-0 lg:border-b-0 lg:border-r lg:px-7 lg:py-8">
+    <main className="min-h-dvh bg-[#f5f4ef] text-[#20211f]">
+      <div className="flex min-h-dvh w-full flex-col lg:flex-row">
+        <aside className="flex w-full flex-col border-b border-[#deded6] bg-[#e9ebe5] px-5 pb-5 pt-[max(1.5rem,env(safe-area-inset-top))] lg:w-[310px] lg:shrink-0 lg:border-b-0 lg:border-r lg:px-7 lg:pb-8 lg:pt-8">
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#747a70]">SnapSeek</p>
             <h1 className="mt-1 text-xl font-semibold tracking-[-0.03em]">Your workspace</h1>
           </div>
 
-          <div className="mt-10 flex items-center gap-3 rounded-xl border border-[#d4d7cf] bg-[#f1f2ed] p-3">
+          <div className="mt-5 flex items-center gap-3 rounded-xl lg:mt-10 border border-[#d4d7cf] bg-[#f1f2ed] p-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#d8dbd4] text-[#747a70]">&#128274;</div>
             <div>
               <p className="text-sm font-semibold text-[#596057]">Workspace locked</p>
@@ -75,7 +75,7 @@ const VerifyMail = () => {
           </div>
         </aside>
 
-        <section className="flex min-h-[calc(100vh-155px)] flex-1 flex-col bg-[#f8f8f4] lg:min-h-screen">
+        <section className="flex flex-1 flex-col bg-[#f8f8f4]">
           <header className="flex items-center justify-between border-b border-[#e4e4dc] px-5 py-4 sm:px-10">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#899087]">Account setup</p>
@@ -84,14 +84,14 @@ const VerifyMail = () => {
             <span className="rounded-full border border-[#cddbc9] bg-[#eaf1e7] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#436448]">Step 1 of 1</span>
           </header>
 
-          <div className="flex flex-1 items-center justify-center px-5 py-12 sm:px-10">
-            <div className="w-full max-w-xl rounded-2xl border border-[#deded6] bg-white p-6 shadow-[0_12px_35px_rgba(32,33,31,0.07)] sm:p-10">
+          <div className="flex flex-1 items-center justify-center px-4 py-8 sm:px-10 sm:py-12">
+            <div className="w-full max-w-xl rounded-2xl border border-[#deded6] bg-white p-5 shadow-[0_12px_35px_rgba(32,33,31,0.07)] sm:p-10">
               <div className={`flex h-14 w-14 items-center justify-center rounded-2xl text-2xl ${isSuccess || isWaiting ? "bg-[#dce8d8] text-[#436448]" : status === "error" ? "bg-[#f3e2dc] text-[#a34e3b]" : "bg-[#dce8d8] text-[#436448]"}`} aria-hidden="true">
                 {isVerifying ? "..." : isSuccess ? "✓" : isWaiting ? "✉" : "!"}
               </div>
 
-              <p className="mt-8 text-[11px] font-bold uppercase tracking-[0.22em] text-[#747a70]">{isVerifying ? "Confirming account" : isSuccess ? "Account ready" : isWaiting ? "Check your inbox" : "Verification issue"}</p>
-              <h3 className="mt-2 text-3xl font-semibold tracking-[-0.045em] sm:text-4xl">{isVerifying ? "Verifying your email" : isSuccess ? "Email verified" : isWaiting ? "Check your email" : "We could not verify that link"}</h3>
+              <p className="mt-6 text-[11px] font-bold uppercase tracking-[0.22em] sm:mt-8 text-[#747a70]">{isVerifying ? "Confirming account" : isSuccess ? "Account ready" : isWaiting ? "Check your inbox" : "Verification issue"}</p>
+              <h3 className="mt-2 text-2xl font-semibold tracking-[-0.045em] sm:text-4xl">{isVerifying ? "Verifying your email" : isSuccess ? "Email verified" : isWaiting ? "Check your email" : "We could not verify that link"}</h3>
               <p className="mt-4 max-w-md text-sm leading-6 text-[#697067]">{isVerifying ? "We are confirming your email address. This will only take a moment." : isWaiting ? "We sent a verification link to your inbox. Open it to unlock your SnapSeek workspace and start your first conversation." : message}</p>
 
               {!isVerifying && !isWaiting && (
@@ -111,7 +111,7 @@ const VerifyMail = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@example.com"
-                      className="w-full rounded-xl border border-[#deded6] bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#a9bca5]"
+                      className="w-full min-w-0 rounded-xl border border-[#deded6] bg-white px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#a9bca5]"
                     />
                     <button
                       type="submit"

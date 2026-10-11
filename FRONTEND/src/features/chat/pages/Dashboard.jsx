@@ -9,6 +9,7 @@ const Dashboard = () => {
   const { initSocket, handleSendMessage, handleGetChats, handleGetMessages, handleDeleteChat } = useChat()
   const [draft, setDraft] = useState('')
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
   const dispatch = useDispatch()
 
   const user = useSelector((state) => state.auth.user)
@@ -28,6 +29,13 @@ const Dashboard = () => {
     }
   }, [currentChatId, handleGetMessages, chats])
 
+  useEffect(() => {
+    if (!mobileSidebarOpen) return
+    const onKeyDown = (event) => { if (event.key === 'Escape') setMobileSidebarOpen(false) }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [mobileSidebarOpen])
+
   const startNewChat = () => {
     dispatch(setCurrentChatId(null))
     setDraft('')
@@ -46,16 +54,24 @@ const Dashboard = () => {
   const displayName = user?.username || 'there'
 
   return (
-    <main className="min-h-screen w-full bg-[#f5f4ef] text-[#20211f] lg:h-screen lg:overflow-hidden">
-      <div className="flex min-h-screen w-full flex-col lg:h-full lg:flex-row">
+    <main className="relative h-dvh w-full overflow-hidden bg-[#f5f4ef] text-[#20211f]">
+      <div className="flex h-full w-full">
         <Sidebar
           chats={chats}
           currentChatId={currentChatId}
           collapsed={sidebarCollapsed}
+          mobileOpen={mobileSidebarOpen}
           displayName={displayName}
-          onSelectChat={(chatId) => dispatch(setCurrentChatId(chatId))}
-          onStartNewChat={startNewChat}
+          onSelectChat={(chatId) => {
+            dispatch(setCurrentChatId(chatId))
+            setMobileSidebarOpen(false)
+          }}
+          onStartNewChat={() => {
+            startNewChat()
+            setMobileSidebarOpen(false)
+          }}
           onToggleCollapse={() => setSidebarCollapsed((isCollapsed) => !isCollapsed)}
+          onCloseMobile={() => setMobileSidebarOpen(false)}
           onDeleteChat={handleDeleteChat}
         />
         <ConversationPanel
@@ -65,6 +81,7 @@ const Dashboard = () => {
           onDraftChange={setDraft}
           onSendMessage={onSendMessage}
           isLoading={isLoading}
+          onOpenMobileSidebar={() => setMobileSidebarOpen(true)}
         />
       </div>
     </main>

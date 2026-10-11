@@ -27,7 +27,7 @@ const LegalPage = ({ type }) => {
     const content = CONTENT[type];
 
     return (
-        <main className="min-h-screen bg-[#f5f4ef] px-6 py-6 text-[#20211f] sm:px-10 lg:px-14">
+        <main className="min-h-dvh bg-[#f5f4ef] px-4 py-5 sm:px-10 sm:py-6 text-[#20211f] lg:px-14">
             <div className="mx-auto max-w-3xl">
                 <header className="flex items-center justify-between">
                     <Link to="/" className="flex items-center gap-3" aria-label="SnapSeek home">
@@ -37,10 +37,10 @@ const LegalPage = ({ type }) => {
                     <Link to="/" className="text-sm font-semibold text-[#436448] transition hover:text-[#20211f]">Home</Link>
                 </header>
 
-                <article className="my-16 rounded-2xl border border-[#deded6] bg-white p-7 shadow-[0_8px_25px_rgba(32,33,31,0.06)] sm:p-12">
+                <article className="my-8 rounded-2xl border border-[#deded6] bg-white p-5 sm:my-16 shadow-[0_8px_25px_rgba(32,33,31,0.06)] sm:p-12">
                     <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#747a70]">{content.label}</p>
-                    <h1 className="mt-3 text-4xl font-semibold tracking-[-0.05em]">{content.title}</h1>
-                    <p className="mt-5 text-lg leading-8 text-[#687066]">{content.intro}</p>
+                    <h1 className="mt-3 text-3xl font-semibold tracking-[-0.05em] sm:text-4xl">{content.title}</h1>
+                    <p className="mt-4 text-base leading-7 sm:mt-5 sm:text-lg sm:leading-8 text-[#687066]">{content.intro}</p>
                     <div className="mt-10 space-y-8">
                         {content.sections.map(([heading, body]) => (
                             <section key={heading}>

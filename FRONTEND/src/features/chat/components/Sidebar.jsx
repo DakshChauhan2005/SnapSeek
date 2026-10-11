@@ -1,22 +1,29 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router'
 
-const Sidebar = ({ chats, currentChatId, collapsed, displayName, onSelectChat, onStartNewChat, onToggleCollapse, onDeleteChat }) => {
+const Sidebar = ({ chats, currentChatId, collapsed, mobileOpen, displayName, onSelectChat, onStartNewChat, onToggleCollapse, onCloseMobile, onDeleteChat }) => {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
   const navigate = useNavigate()
   const orderedChats = Object.values(chats).sort(
     (firstChat, secondChat) => new Date(secondChat.createdAt || 0) - new Date(firstChat.createdAt || 0)
   )
   return (
-    <aside className={`flex w-full flex-col border-b border-[#deded6] bg-[#e9ebe5] transition-[width] duration-300 lg:h-full lg:shrink-0 lg:border-b-0 lg:border-r ${collapsed ? 'lg:w-[76px]' : 'lg:w-[310px]'}`}>
-      <div className={`flex items-center px-5 pb-5 pt-6 ${collapsed ? 'justify-center lg:px-3' : 'justify-between'}`}>
+    <>
+    <div onClick={onCloseMobile} aria-hidden="true" className={`fixed inset-0 z-30 bg-[#20211f]/40 backdrop-blur-[1px] transition-opacity duration-300 lg:hidden ${mobileOpen ? 'opacity-100' : 'pointer-events-none opacity-0'}`} />
+    <aside className={`fixed inset-y-0 left-0 z-40 flex h-dvh w-[85vw] max-w-[340px] flex-col border-r border-[#deded6] bg-[#e9ebe5] transition-[width,transform,visibility] duration-300 lg:static lg:z-auto lg:h-full lg:max-w-none lg:shrink-0 ${mobileOpen ? 'visible translate-x-0' : 'max-lg:invisible max-lg:-translate-x-full'} ${collapsed ? 'lg:w-[76px]' : 'lg:w-[310px]'}`}>
+      <div className={`flex items-center px-5 pb-5 pt-[max(1.5rem,env(safe-area-inset-top))] ${collapsed ? 'justify-center lg:px-3' : 'justify-between'}`}>
         <div className={collapsed ? 'lg:hidden' : ''}>
           <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#747a70]">SnapSeek</p>
           <h1 className="mt-1 text-xl font-semibold tracking-[-0.03em]">Your conversations</h1>
         </div>
-        <button type="button" onClick={onToggleCollapse} aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#cdd1c8] text-lg text-[#596057] transition hover:bg-[#dfe2db]">
-          {collapsed ? '›' : '‹'}
-        </button>
+        <div className="flex items-center gap-2">
+          <button type="button" onClick={onCloseMobile} aria-label="Close conversations" title="Close conversations" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#cdd1c8] text-lg text-[#596057] transition hover:bg-[#dfe2db] lg:hidden">
+            ×
+          </button>
+          <button type="button" onClick={onToggleCollapse} aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} className="hidden h-9 w-9 shrink-0 items-center justify-center lg:flex rounded-full border border-[#cdd1c8] text-lg text-[#596057] transition hover:bg-[#dfe2db]">
+            {collapsed ? '›' : '‹'}
+          </button>
+        </div>
       </div>
 
       <div className={`px-4 ${collapsed ? 'lg:px-3' : ''}`}>
@@ -26,7 +33,7 @@ const Sidebar = ({ chats, currentChatId, collapsed, displayName, onSelectChat, o
         </button>
       </div>
 
-      <nav className="mt-7 flex-1 overflow-y-auto px-3 pb-4" aria-label="Previous chats">
+      <nav className="mt-7 min-h-0 flex-1 overflow-y-auto px-3 pb-4" aria-label="Previous chats">
         {collapsed ? (
           <div className="flex h-full items-center justify-center" aria-label="SnapSeek">
             <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#747a70]" style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>SnapSeek</span>
@@ -46,7 +53,7 @@ const Sidebar = ({ chats, currentChatId, collapsed, displayName, onSelectChat, o
                     aria-label={`Delete ${chatItem.title}`}
                     title="Delete chat"
                     onClick={(event) => { event.stopPropagation(); onDeleteChat(chatItem._id) }}
-                    className="mr-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[#899087] opacity-0 transition hover:bg-[#d4dcd0] hover:text-[#385039] group-hover:opacity-100 group-focus-within:opacity-100"
+                    className="mr-2 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[#899087] opacity-0 transition [@media(hover:none)]:opacity-100 sm:h-8 sm:w-8 hover:bg-[#d4dcd0] hover:text-[#385039] group-hover:opacity-100 group-focus-within:opacity-100"
                   >
                     <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-4 w-4">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M10 11v6m4-6v6M6 7l1 13h10l1-13M9 7V4h6v3" />
@@ -59,7 +66,7 @@ const Sidebar = ({ chats, currentChatId, collapsed, displayName, onSelectChat, o
         )}
       </nav>
 
-      <div className="relative border-t border-[#d4d7cf] p-4">
+      <div className="relative border-t border-[#d4d7cf] p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
         {profileMenuOpen && (
           <div className={`absolute bottom-full z-10 mb-2 rounded-2xl border border-[#d4d7cf] bg-[#f8f8f4] p-2 shadow-[0_10px_24px_rgba(32,33,31,0.12)] ${collapsed ? 'left-2 w-44' : 'left-4 right-4'}`}>
             <p className="px-3 pb-1 pt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#899087]">Account</p>
@@ -83,6 +90,7 @@ const Sidebar = ({ chats, currentChatId, collapsed, displayName, onSelectChat, o
         </button>
       </div>
     </aside>
+    </>
   )
 }
 
