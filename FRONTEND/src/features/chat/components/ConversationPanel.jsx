@@ -1,6 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+
+const normalizeMathDelimiters = (content) => content.replace(/\\\$/g, '$')
 
 const ConversationPanel = ({ activeChat, displayName, draft, onDraftChange, onSendMessage, isLoading, onOpenMobileSidebar }) => {
   const messagesEndRef = useRef(null)
@@ -77,7 +81,14 @@ const ConversationPanel = ({ activeChat, displayName, draft, onDraftChange, onSe
             <div key={message._id || message.id || index} className={`flex gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               {message.role === 'assistant' && <div className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#dce8d8] text-sm text-[#436448]">✦</div>}
               <div className={`min-w-0 max-w-[88%] [overflow-wrap:anywhere] rounded-2xl px-4 py-3 text-sm leading-6 sm:max-w-[min(680px,85%)] ${message.role === 'user' ? 'whitespace-pre-wrap rounded-br-sm bg-[#20211f] text-[#f8f8f4]' : 'markdown-content rounded-bl-sm bg-white text-[#41453f] shadow-[0_2px_8px_rgba(32,33,31,0.04)]'}`}>
-                {message.role === 'assistant' ? <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content || message.text || ''}</ReactMarkdown> : message.content || message.text}
+                {message.role === 'assistant' ? (
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm, remarkMath]}
+                    rehypePlugins={[rehypeKatex]}
+                  >
+                    {normalizeMathDelimiters(message.content || message.text || '')}
+                  </ReactMarkdown>
+                ) : message.content || message.text}
               </div>
             </div>
           ))}

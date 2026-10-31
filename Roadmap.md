@@ -10,7 +10,7 @@ These aren't "nice to have" — they're normal parts of an auth flow that are cu
   - Backend: `POST /api/auth/logout` — clears the `token` cookie (`res.clearCookie("token")`). Optionally also delete the matching `Device` row for `{userId, deviceType}` so the slot is freed immediately instead of waiting for another device to overwrite it.
   - Frontend: `logout()` in `auth.api.js`, `handleLogout()` in `useAuth.js` (dispatch `setUser(null)`, redirect to `/login`), wire it to the sidebar profile section click.
 
-- [ ] **No "resend verification email" option**
+- [x] **No "resend verification email" option**
   If the first verification email doesn't arrive (spam filter, typo'd address caught after the fact, link expired), there's currently no way to get a new one without registering again. Needs a `POST /api/auth/resend-verification` route plus a link on `VerifyMail.jsx`.
 
 - [ ] **No forgot-password / reset-password flow**
@@ -44,7 +44,7 @@ Carried over and expanded from the original notes, roughly ordered by effort vs.
 
 - [x] ~~Single device login~~ — done (device-auth via JWT + `Device` collection)
 - [ ] **Token usage tracking per user** — Groq/Gemini/Mistral responses include usage metadata; store per-message, sum per user. Groundwork for rate limits or a usage dashboard.
-- [ ] **Google OAuth login** — you already have `GOOGLE_CLIENT_ID`/`SECRET` in `.env` for email sending; add a second OAuth flow for login via `passport-google-oauth20` or a manual flow.
+- [x] **Google OAuth login** — you already have `GOOGLE_CLIENT_ID`/`SECRET` in `.env` for email sending; add a second OAuth flow for login via `passport-google-oauth20` or a manual flow.
 - [ ] **Streamed markdown rendering fixes** — partial markdown (unclosed code fences, `**bold` mid-word) can render oddly while a message is still streaming in.
 - [ ] **Image input** — Gemini and Groq vision models accept image content blocks; add file upload in the chat input, base64-encode, pass through as an image block in the `HumanMessage`.
 - [ ] **Stop/cancel generation mid-stream** — `AbortController` on the backend's `agent.stream()` call, triggered by a `stop_generation` socket event from the frontend.
